@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Our Story — College Memories</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Firebase SDK (for shared Memory Wall) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+:root{
+  --bg:#120d07;--bg2:#1e1408;--bg3:#2a1c0a;
+  --amber:#c8820e;--al:#e6a030;--ag:#f0c060;
+  --cream:#f2e4c4;--cd:#c4af88;
+  --text:#ede0c4;--td:#8a7355;
+  --br:rgba(200,130,14,.2);--brb:rgba(200,130,14,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--amber);border-radius:2px}
+
+/* GRAIN */
+body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:180px 180px;opacity:.45;mix-blend-mode:overlay;animation:grain .7s steps(1) infinite}
+body::before{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.6) 100%)}
+@keyframes grain{0%,100%{background-position:0 0}10%{background-position:-5% -10%}20%{background-position:-15% 5%}
+  30%{background-position:7% -25%}40%{background-position:20% 25%}50%{background-position:-25% 10%}
+  60%{background-position:15% 5%}70%{background-position:0 15%}80%{background-position:25% 35%}90%{background-position:-10% 10%}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 28px;
+  display:flex;justify-content:space-between;align-items:center;transition:all .4s}
+nav.scrolled{background:rgba(10,6,2,.94);backdrop-filter:blur(14px);padding:12px 28px;border-bottom:1px solid var(--br)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);text-decoration:none;
+  letter-spacing:.05em;user-select:none;-webkit-tap-highlight-color:transparent}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cd);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--al)}
+.nav-menu-btn{display:none;background:none;border:1px solid var(--br);color:var(--cream);
+  width:36px;height:36px;border-radius:4px;cursor:pointer;font-size:18px;align-items:center;justify-content:center}
+
+/* HERO */
+#hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;position:relative;overflow:hidden;padding:60px 24px}
+.hero-bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 60%,rgba(200,130,14,.08) 0%,transparent 70%),
+  radial-gradient(ellipse 40% 60% at 20% 40%,rgba(120,70,5,.15) 0%,transparent 60%),var(--bg)}
+.film-strip{position:absolute;left:0;right:0;height:44px;background:#0a0600;z-index:3;overflow:hidden}
+.film-strip.top{top:0}.film-strip.bottom{bottom:0}
+.film-holes{position:absolute;inset:0;display:flex;align-items:center;padding:0 8px;gap:24px}
+.film-hole{min-width:16px;height:20px;border-radius:3px;background:var(--bg);border:1px solid #1a1000;flex-shrink:0}
+.polaroids-field{position:absolute;inset:0;z-index:2;pointer-events:none}
+.pol{position:absolute;background:#f5efdf;padding:8px 8px 30px;
+  box-shadow:0 8px 40px rgba(0,0,0,.7);opacity:0;animation:polFloat linear infinite}
+.pol img{display:block;width:100%;aspect-ratio:1;object-fit:cover;filter:sepia(.2) contrast(1.05)}
+.pol-cap{font-family:'Caveat',cursive;font-size:12px;color:#3a2800;text-align:center;margin-top:6px;display:block}
+@keyframes polFloat{0%{transform:rotate(var(--rot)) translateY(30px);opacity:0}
+  8%{opacity:var(--op)}88%{opacity:var(--op)}100%{transform:rotate(calc(var(--rot)+3deg)) translateY(-20px);opacity:0}}
+.hero-content{position:relative;z-index:5;text-align:center;max-width:720px}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:.35em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:24px;opacity:0;animation:fadeUp 1s ease .3s forwards}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,12vw,108px);
+  font-weight:300;line-height:.95;color:var(--cream);letter-spacing:-.02em;
+  opacity:0;animation:fadeUp 1.2s ease .5s forwards}
+.hero-title em{font-style:italic;color:var(--al)}
+.hero-subtitle{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.4vw,22px);
+  font-weight:300;font-style:italic;color:var(--cd);margin-top:24px;line-height:1.7;
+  opacity:0;animation:fadeUp 1s ease .9s forwards}
+.hero-line{width:1px;height:55px;background:linear-gradient(to bottom,var(--amber),transparent);
+  margin:36px auto 0;opacity:0;animation:fadeIn 1s ease 1.4s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{to{opacity:1}}
+
+/* ══ GALLERY — PROFESSIONAL MASONRY ══ */
+#gallery{padding:90px 0;max-width:1600px;margin:0 auto}
+.gallery-header{padding:0 24px 56px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,5vw,58px);font-weight:300;line-height:1.1;color:var(--cream)}
+
+/* Clean masonry grid */
+.gallery-masonry{
+  columns:8;
+  column-gap:4px;
+  padding:0 4px;
+}
+@media(max-width:1200px){.gallery-masonry{columns:6}}
+@media(max-width:768px){.gallery-masonry{columns:4;column-gap:3px;padding:0 3px}}
+@media(max-width:480px){.gallery-masonry{columns:4;column-gap:2px;padding:0 2px}}
+
+.gallery-pol{
+  break-inside:avoid;
+  margin-bottom:4px;
+  background:var(--bg2);
+  overflow:hidden;
+  cursor:pointer;
+  position:relative;
+  display:inline-block;
+  width:100%;
+  border-radius:2px;
+}
+@media(max-width:768px){.gallery-pol{margin-bottom:3px}}
+@media(max-width:480px){.gallery-pol{margin-bottom:2px}}
+
+.gallery-pol::before{display:none}
+.gallery-pol::after{display:none}
+
+.gallery-pol img{
+  display:block;
+  width:100%;
+  height:auto;
+  transition:transform .5s cubic-bezier(.23,1,.32,1),filter .4s;
+  filter:brightness(.96) contrast(1.02);
+  vertical-align:bottom;
+}
+.gallery-pol:hover img{
+  transform:scale(1.04);
+  filter:brightness(1.04) contrast(1.05);
+}
+
+/* Hover overlay */
+.gallery-pol-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 50%);
+  opacity:0;
+  transition:opacity .35s;
+  pointer-events:none;
+}
+.gallery-pol:hover .gallery-pol-overlay{opacity:1}
+
+.gallery-pol-cap{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  font-family:'DM Sans',sans-serif;
+  font-size:10px;
+  font-weight:400;
+  letter-spacing:.06em;
+  color:rgba(255,255,255,.85);
+  padding:8px 8px 6px;
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity .3s,transform .3s;
+  line-height:1.3;
+  text-shadow:0 1px 4px rgba(0,0,0,.6);
+}
+.gallery-pol:hover .gallery-pol-cap{opacity:1;transform:none}
+
+/* video thumb extras */
+.pol-thumb-wrap{position:relative;overflow:hidden}
+.pol-play-over{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.28);
+  transition:background .3s;
+}
+.gallery-pol:hover .pol-play-over{background:rgba(0,0,0,.18)}
+.pol-play-over svg{width:36px;height:36px;filter:drop-shadow(0 2px 12px rgba(0,0,0,.9));transition:transform .3s}
+.gallery-pol:hover .pol-play-over svg{transform:scale(1.12)}
+.pol-video-label{
+  position:absolute;top:6px;left:6px;
+  background:rgba(200,130,14,.88);color:#1a0d00;
+  font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 7px;border-radius:2px;
+}
+
+/* download btn */
+.pol-dl{
+  position:absolute;top:8px;right:8px;
+  background:rgba(0,0,0,.5);
+  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.8);
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  opacity:0;transform:scale(.85);transition:opacity .25s,transform .25s,background .2s;
+  backdrop-filter:blur(6px);
+}
+.pol-dl svg{width:12px;height:12px;pointer-events:none}
+.gallery-pol:hover .pol-dl{opacity:1;transform:scale(1)}
+.pol-dl:hover{background:rgba(200,130,14,.7)!important;color:#fff;border-color:var(--amber)}
+@media(hover:none){.pol-dl{opacity:.9;transform:scale(1)}}
+
+.empty-gallery{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:40vh;text-align:center;padding:60px 20px;color:var(--td)}
+.empty-gallery p:first-child{font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;color:var(--cd);margin-bottom:8px}
+.empty-gallery p:last-child{font-size:12px;letter-spacing:.08em}
+
+/* ══ LIGHTBOX ══ */
+#lightbox{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.97);
+  align-items:center;justify-content:center;flex-direction:column;touch-action:none}
+#lightbox.active{display:flex}
+.lb-top-bar{position:absolute;top:0;left:0;right:0;z-index:2;
+  display:flex;justify-content:space-between;align-items:center;padding:14px 18px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.7),transparent)}
+.lb-dl-btn{display:flex;align-items:center;gap:7px;background:rgba(200,130,14,.15);
+  border:1px solid var(--brb);color:var(--al);font-family:'DM Sans',sans-serif;
+  font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;
+  padding:9px 18px;border-radius:40px;cursor:pointer;transition:all .25s;
+  backdrop-filter:blur(8px)}
+.lb-dl-btn:hover{background:var(--amber);color:#1a0d00}
+.lb-dl-btn svg{width:14px;height:14px}
+#lb-close{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.8);width:38px;height:38px;border-radius:50%;cursor:pointer;
+  font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+#lb-close:hover{background:rgba(255,255,255,.15);color:#fff}
+#lb-content{display:flex;align-items:center;justify-content:center;flex:1;width:100%;padding:56px 56px 20px}
+#lb-content img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:2px}
+#lb-content video{max-width:100%;max-height:80vh}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.7);width:42px;height:42px;border-radius:50%;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s}
+.lb-nav:hover{background:rgba(200,130,14,.25);border-color:var(--amber);color:#fff}
+#lb-prev{left:12px}#lb-next{right:12px}
+.lb-counter{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.15em}
+
+/* ══ MEMORY WALL ══ */
+#memories{padding:90px 24px;max-width:1400px;margin:0 auto}
+.mem-hdr{margin-bottom:48px}
+.add-mem-form{background:var(--bg2);border:1px solid var(--br);border-radius:4px;padding:28px;
+  margin-bottom:48px;position:relative;overflow:hidden}
+.add-mem-form::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(to bottom,var(--amber),var(--ag),var(--amber))}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--cream);margin-bottom:20px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.fg{display:flex;flex-direction:column;gap:7px}
+.fg label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);font-weight:500}
+.fg input,.fg textarea{background:rgba(255,255,255,.04);border:1px solid var(--br);color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 14px;border-radius:2px;outline:none;
+  transition:border-color .2s,background .2s;resize:vertical;-webkit-appearance:none}
+.fg input:focus,.fg textarea:focus{border-color:var(--amber);background:rgba(200,130,14,.05)}
+.fg textarea{min-height:90px;font-family:'Caveat',cursive;font-size:17px;line-height:1.6}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--td);font-style:italic}
+.submit-btn{margin-top:18px;background:transparent;border:1px solid var(--amber);
+  color:var(--al);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;padding:13px 32px;cursor:pointer;
+  border-radius:2px;transition:all .3s;-webkit-appearance:none}
+.submit-btn:hover{background:var(--amber);color:#1a0d00}
+.mems-grid{columns:4 200px;column-gap:16px}
+@media(max-width:600px){.mems-grid{columns:2 160px;column-gap:10px}}
+.mem-card{break-inside:avoid;margin-bottom:16px;background:var(--bg2);border:1px solid var(--br);
+  padding:22px;position:relative;border-radius:2px;transition:border-color .3s,box-shadow .3s}
+.mem-card:hover{border-color:var(--brb);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.mem-author{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.mem-avatar{width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--amber),var(--bg3));display:flex;
+  align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:600;color:var(--cream);flex-shrink:0}
+.mem-name{font-size:13px;font-weight:500;color:var(--cream)}
+.mem-date{font-size:10px;color:var(--td)}
+.mem-text{font-family:'Caveat',cursive;font-size:18px;line-height:1.65;color:var(--cd);position:relative}
+.mem-text::before{content:'\201C';font-family:'Cormorant Garamond',serif;font-size:54px;color:rgba(200,130,14,.12);
+  position:absolute;top:-12px;left:-6px;line-height:1;pointer-events:none}
+.mem-year{margin-top:14px;display:inline-block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--amber);border:1px solid rgba(200,130,14,.25);padding:3px 9px;border-radius:2px}
+.mem-del{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--td);
+  cursor:pointer;font-size:14px;opacity:0;transition:opacity .2s;padding:4px}
+.mem-card:hover .mem-del{opacity:.5}
+.mem-card:hover .mem-del:hover{opacity:1;color:#e24b4a}
+
+/* ══ GIFTS ══ */
+#gifts{padding:90px 24px;max-width:1400px;margin:0 auto}
+.gifts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:18px;margin-top:48px}
+@media(max-width:600px){.gifts-grid{grid-template-columns:repeat(2,1fr);gap:12px}}
+.gift-box{background:var(--bg2);border:1px solid var(--br);border-radius:8px;padding:28px 16px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;
+  transition:all .4s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;user-select:none}
+.gift-box::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 80%,rgba(200,130,14,.08),transparent 70%);opacity:0;transition:opacity .4s}
+.gift-box:hover{border-color:var(--brb);transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.gift-box:hover::before{opacity:1}
+.gift-icon{font-size:40px;transition:transform .4s cubic-bezier(.23,1,.32,1)}
+.gift-box:hover .gift-icon{transform:scale(1.15) rotate(-5deg)}
+.gift-ribbon{position:absolute;top:0;left:50%;transform:translateX(-50%);width:2px;height:40%;
+  background:linear-gradient(to bottom,var(--amber),transparent)}
+.gift-ribbon::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:36px;height:2px;background:var(--amber)}
+.gift-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--cream);text-align:center;line-height:1.2}
+.gift-hint{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--td)}
+
+/* GIFT MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.88);
+  backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--br);border-radius:8px;width:100%;
+  max-width:440px;overflow:hidden;position:relative;animation:modalIn .4s cubic-bezier(.23,1,.32,1)}
+@keyframes modalIn{from{opacity:0;transform:scale(.92) translateY(16px)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;
+  color:var(--td);font-size:22px;cursor:pointer;z-index:2;padding:4px;line-height:1;transition:color .2s}
+.modal-close:hover{color:var(--cream)}
+.modal-body{padding:32px 28px}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-style:italic;color:var(--cream);margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--td);margin-bottom:26px;line-height:1.6}
+.modal-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--text);
+  font-family:'Caveat',cursive;font-size:20px;padding:12px 15px;border-radius:3px;
+  outline:none;margin-bottom:14px;transition:border-color .2s;-webkit-appearance:none}
+.modal-input:focus{border-color:var(--amber)}
+.modal-btn{width:100%;background:transparent;border:1px solid var(--amber);color:var(--al);
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;padding:13px;cursor:pointer;border-radius:2px;transition:all .3s}
+.modal-btn:hover{background:var(--amber);color:#1a0d00}
+.modal-err{font-size:12px;color:#e24b4a;margin-top:8px;opacity:0;transition:opacity .3s}
+.modal-err.show{opacity:1}
+
+/* GIFT REVEAL */
+#gift-reveal{display:none;position:fixed;inset:0;z-index:9500;background:var(--bg);overflow-y:auto}
+#gift-reveal.active{display:block}
+.reveal-inner{min-height:100svh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:60px 24px;text-align:center;position:relative}
+.reveal-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(200,130,14,.1),transparent 60%),var(--bg)}
+.reveal-back{position:absolute;top:18px;left:18px;background:none;border:1px solid var(--br);
+  color:var(--cd);font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  padding:9px 16px;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;transition:all .3s}
+.reveal-back:hover{border-color:var(--amber);color:var(--al)}
+.reveal-frame{position:relative;z-index:2;margin-bottom:32px;background:#f5efdf;
+  padding:10px 10px 42px;box-shadow:0 20px 80px rgba(0,0,0,.7),0 4px 16px rgba(0,0,0,.5);
+  transform:rotate(-1.5deg);max-width:300px;width:85vw}
+.reveal-frame img{display:block;width:100%;height:auto;filter:sepia(.15) contrast(1.05)}
+.reveal-frame-cap{font-family:'Caveat',cursive;font-size:14px;color:#3a2800;text-align:center;margin-top:8px;display:block}
+.reveal-greeting{position:relative;z-index:2;max-width:520px}
+.reveal-to{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.reveal-msg{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,3.5vw,34px);
+  font-style:italic;font-weight:300;color:var(--cream);line-height:1.6;margin-bottom:22px}
+.reveal-from{font-family:'Caveat',cursive;font-size:19px;color:var(--al)}
+.sparkles{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.sparkle{position:absolute;animation:sparkleUp linear infinite;opacity:0}
+@keyframes sparkleUp{0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+  8%{opacity:1}90%{opacity:.5}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+
+/* MUSIC PLAYER */
+#music-player{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  z-index:5000;background:rgba(15,9,2,.93);backdrop-filter:blur(16px);
+  border:1px solid var(--br);border-radius:40px;padding:9px 16px;
+  display:flex;align-items:center;gap:10px;box-shadow:0 6px 28px rgba(0,0,0,.5);
+  transition:all .4s cubic-bezier(.23,1,.32,1)}
+#music-player.hidden{transform:translateX(-50%) translateY(80px);opacity:0;pointer-events:none}
+.mp-bars{display:flex;align-items:flex-end;gap:2px;height:14px}
+.mp-bar{width:3px;background:var(--amber);border-radius:2px;animation:mpb var(--d,.5s) ease-in-out infinite alternate}
+.mp-bar:nth-child(1){--d:.4s}.mp-bar:nth-child(2){--d:.6s}.mp-bar:nth-child(3){--d:.3s}.mp-bar:nth-child(4){--d:.5s}
+@keyframes mpb{from{height:3px}to{height:12px}}
+.mp-bars.paused .mp-bar{animation-play-state:paused;height:5px}
+.mp-info{display:flex;flex-direction:column;min-width:0}
+.mp-title{font-size:11px;font-weight:500;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.mp-sub{font-size:9px;color:var(--td);letter-spacing:.05em}
+.mp-btn{background:none;border:none;color:var(--cd);cursor:pointer;font-size:14px;
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:color .2s;flex-shrink:0;border-radius:50%}
+.mp-btn:hover{color:var(--al)}
+.mp-play{width:34px;height:34px;border-radius:50%;background:var(--amber);color:#1a0d00;font-size:13px;flex-shrink:0}
+.mp-play:hover{background:var(--ag)}
+#show-player-btn{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:4999;
+  background:rgba(15,9,2,.88);backdrop-filter:blur(10px);border:1px solid var(--br);
+  border-radius:40px;padding:9px 18px;color:var(--al);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .3s;box-shadow:0 4px 18px rgba(0,0,0,.4)}
+#show-player-btn.gone{display:none}
+#show-player-btn:hover{border-color:var(--amber)}
+
+/* QUOTE + FOOTER */
+#quote-section{padding:90px 24px;text-align:center;position:relative;overflow:hidden}
+.quote-bg{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(200,130,14,.06),transparent 70%)}
+.big-quote{position:relative;z-index:2;max-width:780px;margin:0 auto}
+.big-quote blockquote{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,3.2vw,36px);
+  font-style:italic;font-weight:300;color:var(--cream);line-height:1.6;margin-bottom:18px}
+.big-quote cite{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);font-style:normal}
+footer{border-top:1px solid var(--br);padding:56px 24px;text-align:center}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:28px;font-style:italic;color:var(--cream);margin-bottom:12px;
+  user-select:none;-webkit-tap-highlight-color:transparent;cursor:default}
+footer p{font-size:13px;color:var(--td);line-height:1.7}
+.footer-note{margin-top:26px;font-family:'Caveat',cursive;font-size:18px;color:var(--al)}
+.divider{display:flex;align-items:center;gap:20px;padding:0 24px;max-width:1400px;margin:0 auto;opacity:.25}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--amber)}
+
+/* TOAST */
+#toast{position:fixed;bottom:80px;right:20px;background:var(--bg2);border:1px solid var(--amber);
+  color:var(--cream);font-size:12px;padding:11px 18px;border-radius:3px;z-index:99999;
+  transform:translateY(10px);opacity:0;transition:all .35s cubic-bezier(.23,1,.32,1);
+  pointer-events:none;max-width:calc(100vw - 40px)}
+#toast.show{opacity:1;transform:translateY(0)}
+
+/* DRAG OVERLAY */
+#drag-overlay{position:fixed;inset:0;z-index:9997;background:rgba(10,6,2,.94);
+  border:2px dashed var(--amber);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#drag-overlay.active{display:flex}
+#drag-overlay p:first-child{font-family:'Cormorant Garamond',serif;font-size:36px;font-style:italic;color:var(--cream)}
+#drag-overlay p:last-child{font-size:11px;letter-spacing:.2em;color:var(--amber);text-transform:uppercase}
+#upload-progress{position:fixed;top:0;left:0;right:0;height:2px;background:var(--amber);
+  z-index:99999;transform-origin:left;transform:scaleX(0);transition:transform .3s}
+
+/* REVEAL ANIM */
+.anim-reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+.anim-reveal.visible{opacity:1;transform:none}
+
+@media(max-width:768px){
+  nav{padding:13px 16px}nav.scrolled{padding:9px 16px}
+  .nav-links{display:none}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;inset:0;
+    background:rgba(10,6,2,.98);align-items:center;justify-content:center;gap:36px;z-index:999}
+  .nav-links.open a{font-size:16px}
+  .nav-menu-btn{display:flex}
+  #memories,#gifts{padding:60px 14px}
+  .form-row{grid-template-columns:1fr}
+  .add-mem-form{padding:20px}
+  #lb-content{padding:50px 50px 16px}
+  #lb-prev{left:8px}#lb-next{right:8px}
+  .lb-nav{width:36px;height:36px}
+  #music-player{max-width:calc(100vw - 24px);padding:8px 12px;gap:8px}
+  .mp-title{max-width:90px}
+}
+</style>
+</head>
+<body>
+
+<div id="upload-progress"></div>
+<div id="toast"></div>
+<div id="drag-overlay"><p>Drop your memories here</p><p>Photos &amp; Videos</p></div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <div class="lb-top-bar">
+    <button class="lb-dl-btn" id="lb-download-btn" onclick="downloadCurrent()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Download
+    </button>
+    <button id="lb-close">&#x2715;</button>
+  </div>
+  <div id="lb-content"></div>
+  <button class="lb-nav" id="lb-prev">&#8592;</button>
+  <button class="lb-nav" id="lb-next">&#8594;</button>
+  <div class="lb-counter" id="lb-counter"></div>
+</div>
+
+<!-- GIFT NAME MODAL -->
+<div class="modal-overlay" id="gift-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeGiftModal()">&#x2715;</button>
+    <div class="modal-body">
+      <div class="modal-title" id="gm-title">Something awaits you ✦</div>
+      <p class="modal-sub" id="gm-sub">Whisper your name to open it — this one was made for you.</p>
+      <input class="modal-input" id="gm-input" placeholder="Your name (priya)" autocomplete="off" autocorrect="off" autocapitalize="words">
+      <button class="modal-btn" onclick="checkGiftName()">Open with love ✦</button>
+      <div class="modal-err" id="gm-err">That doesn't seem right — try again, love?</div>
+    </div>
+  </div>
+</div>
+
+<!-- GIFT REVEAL PAGE -->
+<div id="gift-reveal">
+  <div class="reveal-inner">
+    <div class="reveal-bg"></div>
+    <div class="sparkles" id="sparkles"></div>
+    <button class="reveal-back" onclick="closeReveal()">&#8592; Back</button>
+    <div class="reveal-frame" id="reveal-frame" style="display:none">
+      <img id="reveal-photo" src="" alt="">
+      <span class="reveal-frame-cap" id="reveal-cap"></span>
+    </div>
+    <div class="reveal-greeting">
+      <div class="reveal-to" id="reveal-to"></div>
+      <div class="reveal-msg" id="reveal-msg"></div>
+      <div class="reveal-from">— with every ounce of love, from all of us ✦</div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- MUSIC PLAYER -->
+<button id="show-player-btn" class="gone" onclick="showPlayer()">🎵 Music</button>
+<div id="music-player" class="hidden">
+  <div class="mp-bars paused" id="mp-bars">
+    <div class="mp-bar"></div><div class="mp-bar"></div><div class="mp-bar"></div><div class="mp-bar"></div>
+  </div>
+  <div class="mp-info">
+    <div class="mp-title" id="mp-title">No tracks</div>
+    <div class="mp-sub" id="mp-sub">Add music in admin</div>
+  </div>
+  <button class="mp-btn" onclick="prevTrack()">&#9664;</button>
+  <button class="mp-btn mp-play" id="mp-play-btn" onclick="togglePlay()">▶</button>
+  <button class="mp-btn" onclick="nextTrack()">&#9654;</button>
+  <button class="mp-btn" id="mp-mute" onclick="toggleMute()" title="Mute">🔊</button>
+  <button class="mp-btn" onclick="hidePlayer()" style="opacity:.45;font-size:11px">&#9660;</button>
+</div>
+<audio id="audio-el" preload="auto"></audio>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">Our Story</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#gallery" onclick="closeMenu()">Gallery</a></li>
+    <li><a href="#memories" onclick="closeMenu()">Memories</a></li>
+    <li><a href="#gifts" onclick="closeMenu()">Gifts</a></li>
+  </ul>
+  <button class="nav-menu-btn" onclick="toggleMenu()">&#9776;</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="film-strip top" id="film-top"></div>
+  <div class="film-strip bottom" id="film-bottom"></div>
+  <div class="polaroids-field" id="pol-field"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">A Love Letter in Photographs</div>
+    <h1 class="hero-title">Our <em>Story</em></h1>
+    <p class="hero-subtitle">Every stolen laugh in the back row, every 3am chai, every tear we pretended wasn't there — this is where they all live on, forever.</p>
+    <div class="hero-line"></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-header">
+    <div>
+      <div class="section-label">Through the Lens of Us</div>
+      <h2 class="section-title">Moments We'll Never Let Go</h2>
+      <p style="margin-top:12px;color:var(--cd);font-size:15px;line-height:1.7;max-width:540px;font-family:'Cormorant Garamond',serif;font-style:italic">These aren't just photographs. They're proof that it was real — that it was beautiful, that it was ours.</p>
+    </div>
+  </div>
+  <div id="gallery-grid" class="gallery-masonry"></div>
+</section>
+
+<div class="divider"><span style="font-size:13px;color:var(--amber)">✦</span></div>
+
+<!-- MEMORY WALL -->
+<section id="memories">
+  <div class="mem-hdr anim-reveal">
+    <div class="section-label">The Wall</div>
+    <h2 class="section-title">Leave a Piece of Your Heart</h2>
+    <p style="margin-top:10px;color:var(--cd);font-size:15px;line-height:1.7;max-width:540px;font-family:'Cormorant Garamond',serif;font-style:italic">Something only we would understand. Something that made you feel, even for a second, like this would last forever.</p>
+  </div>
+  <!-- shown only if Firebase is not configured -->
+  <div id="wall-offline-notice" style="display:none;align-items:center;gap:12px;background:rgba(200,130,14,.07);border:1px solid rgba(200,130,14,.25);border-radius:6px;padding:14px 18px;margin-bottom:28px;font-size:12px;color:var(--cd);line-height:1.65">
+    <span style="font-size:20px;flex-shrink:0">🔒</span>
+    <span>Memories are currently saved <strong style="color:var(--al)">locally</strong> in this browser only — others won't see them. To make the wall shared &amp; permanent, fill in the <strong style="color:var(--al)">FIREBASE_CONFIG</strong> at the top of the &lt;script&gt;. It's free and takes ~5 minutes.</span>
+  </div>
+  <div class="add-mem-form anim-reveal">
+    <div class="form-title">Write something we'll never forget</div>
+    <div class="form-row">
+      <div class="fg"><input type="text" id="mem-name" placeholder="What do we call you?"></div>
+      
+    </div>
+    <div class="fg"><label>Your Memory</label><textarea id="mem-text" placeholder="That night when... / I'll never forget the way... / The moment I knew this was something special..."></textarea></div>
+    <button class="submit-btn" onclick="addMemory()">Post to the Wall ✦</button>
+  </div>
+  <div id="mems-grid" class="mems-grid"></div>
+</section>
+
+<div class="divider"><span style="font-size:13px;color:var(--amber)">✦</span></div>
+
+<!-- GIFTS -->
+<section id="gifts">
+  <div class="anim-reveal">
+    <div class="section-label">Personal Gifts</div>
+    <h2 class="section-title">Something Just for You</h2>
+    <p style="margin-top:10px;color:var(--cd);font-size:15px;line-height:1.7;max-width:560px;font-family:'Cormorant Garamond',serif;font-style:italic">Every single one of you left a mark on this story that can never be erased. Find your name, and know — you were seen, you were cherished, you were loved.</p>
+  </div>
+  <div id="gifts-grid" class="gifts-grid"></div>
+</section>
+
+<!-- QUOTE -->
+<section id="quote-section">
+  <div class="quote-bg"></div>
+  <div class="big-quote anim-reveal">
+    <blockquote>"We didn't realise we were making memories. We just knew we were having the time of our lives — and somehow, some part of us always knew it would never be quite like this again."</blockquote>
+    <cite>— A reminder, for all of us, to hold this close</cite>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo" id="footer-logo">Our Story</div>
+  <p>Made with every ounce of love, for the people who made these years impossible to forget.</p>
+  <div class="footer-note">Thank you for being the best chapter of my life ✦</div>
+</footer>
+
+<script>
+// ════════════════════════════════════════════════════════════════════
+//
+//  🔥  FIREBASE SETUP — so everyone shares the same Memory Wall
+//
+//  Step 1: Go to https://console.firebase.google.com
+//  Step 2: Create a new project (free)
+//  Step 3: Add a Web App  →  copy the firebaseConfig object
+//  Step 4: Go to "Realtime Database" → Create database → Start in TEST mode
+//          (test mode = anyone with the link can read & write — perfect for friends)
+//  Step 5: Paste your config values below
+//
+//  Without this, memories are saved locally per browser only (not shared).
+//
+// ════════════════════════════════════════════════════════════════════
+
+  // FIND THIS SECTION IN YOUR CODE AND UPDATE IT
+const firebaseConfig = {
+  apiKey: "AIzaSyB44Xeil9_cqwFSxoQsFS8AvOineaDhxwU",
+  authDomain: "memories-83dc0.firebaseapp.com",
+  databaseURL: "https://memories-83dc0-default-rtdb.firebaseio.com",
+  projectId: "memories-83dc0",
+  storageBucket: "memories-83dc0.firebasestorage.app",
+  messagingSenderId: "439139162695",
+  appId: "1:439139162695:web:f4a068efea13b6a7dbaf62",
+  measurementId: "G-MMPECD6SHG"
+};
+
+// ════════════════════════════════════════════════════════════════════
+//
+//  ✏️  YOUR MEDIA — EDIT THESE ARRAYS TO ADD YOUR FILES
+//
+//  All files should be in a folder named  media/  next to this HTML
+//  Example structure:
+//    📁 memories.html   ← this file
+//    📁 media/
+//        photo1.jpg
+//        photo2.jpg
+//        video1.mp4
+//        song1.mp3
+//        arjun.jpg
+//
+// ════════════════════════════════════════════════════════════════════
+
+// ── PHOTOS & VIDEOS ──────────────────────────────────────────────
+// Add as many entries as you want.
+// type: 'image' or 'video'
+// caption: the handwritten text shown below each polaroid (optional)
+const LOCAL_MEDIA = [
+  { src: '1igyaQAw1fjwdHFlrOIrSOA144_TWzftJ', type: 'image' },
+  { src: '1g7gN7JpG4L5xTUu72fk9c5_k_BxlnMte', type: 'image' },
+  { src: '1k-HYgAA7Cmc6JgY7uJDbMH-nMeIElxCI', type: 'image' },
+  { src: '1qUYD-t5OFOkHBuC8ditqI9L_IW8SANcD', type: 'image' },
+  { src: '1OfyDabsYi61uKumwkRBo9iscybeSHD0x', type: 'image' },
+  { src: '1Fw2eLi0KXX6Nhz1uOx1DKAPonTRTl4lh', type: 'image' },
+  { src: '1f6hHNATBt9Hs3xTXv7PuqWzzHE2tZUHd', type: 'image' },
+  { src: '19ICTNedmPjny3dxlLXAllYoTsKa9pM_T', type: 'video' },
+  { src: '1mYRMTWLuTXR-KkhouPWUP2kjk8I0pgl2', type: 'video' },
+  { src: '1v6-JAEInzCmkbsdfAioalR7vELcnbI7l', type: 'image' },
+  { src: '1MwzYlBXLoSiGdv09iJaduh3c2Aeu10eE', type: 'video' },
+  { src: '1XudMQ5oD_NL006IMfe24pZYvil-4fLUg', type: 'image' },
+  { src: '1g64sD8MAG5xQk8CAFy09eq-sIjvJjL7U', type: 'image' },
+  { src: '1Cj2NFfpRh89UtwEc-RdaDohjLfbtrIdl', type: 'image' },
+  { src: '18xukAk8CV4ci3xOxUs7YOk-e0hmAXCmi', type: 'image' },
+  { src: '1Ft_GcqBTjqw_Jwaw80wqzVMlUsV3otfX', type: 'image' },
+  { src: '1hyiZg5vo4H4BU4iph47RztSbncnASY9q', type: 'image' },
+  { src: '1zwFENna7UWLwLgfOFlsvcMiSp2cUZZxU', type: 'image' },
+  { src: '1P331akyVyF7OF0uzZu3eJFrjmtj8Qkne', type: 'image' },
+  { src: '1JEUIgizgvIVKI5I7CX5xBxmi7e2f0rV9', type: 'image' },
+  { src: '1zy1XynYot4_Fv_g0oFIaAPo9N7868dz7', type: 'video' },
+  { src: '1KZPL_dnhvsNH2zCJUsA2q-lQCcWqjLm6', type: 'image' },
+  { src: '1YndTsrRqCuWTGz80MaPJNVkABPdG8xZL', type: 'image' },
+  { src: '1enb7hkatgEk1FFaNiIvkciO8_gq1AOmP', type: 'image' },
+  { src: '1DR6DROEVbve3cm86I4DdoXHALmwKR2Im', type: 'image' },
+  { src: '1u_YG56wHD5C7LUV_S_0w0AEUkRwOl7aw', type: 'image' },
+  { src: '1IlnWGLqe821sfpMMHgWQ4T48m1I0Vtdy', type: 'image' },
+  { src: '1R0O5kv51Ypcj14dKOlSvCRzw65QXrKhV', type: 'image' },
+  { src: '1b50kzJoGlHK5XmpYNFVnnnQc22m0Sgg8', type: 'image' },
+  { src: '1vEzWA3S4JkJR6G1D6QqsYpp8ik6zxzcL', type: 'image' },
+  { src: '1gxkWcHw6gwIgQ0tZ6LaGzGLHqYpkvHHj', type: 'image' },
+  { src: '1L7pS-62OqRwxlO3GeCbkuYyQYfmjSKCL', type: 'image' },
+  { src: '18GvNMJP8Ogv20AxvyaUWiDjaCBujLYhY', type: 'image' },
+  { src: '1zNROAZTf_QJZrChCUOuTrNY4W4_c9NLB', type: 'image' },
+  { src: '1J9qyVO-fS7aT79H24IXZUglMU6VghSze', type: 'image' },
+  { src: '1s-zG9ViQPM4eLvNA7bZhQRSg1nbU8xx4', type: 'image' },
+  { src: '19UXUrZxaJnf4R1zICniJ1gBarZhMFIhd', type: 'image' },
+  { src: '1AccJ_2aXwvzXUz6FRjOCR1XPtf6BXKtN', type: 'image' },
+  { src: '1OYJMoUspTYKeV-swtOikbbu0vv42i6KK', type: 'image' },
+  { src: '1PF7WtSwEGATtGfJ_9wE73yPOw5ULWym0', type: 'image' },
+  { src: '1lLSDbBSK67tSmaXhWVjHS0K1GwH5myqa', type: 'image' },
+  { src: '1WuIXS6txyeOCFPZLYj3rlLdbZd-anB0J', type: 'image' },
+  { src: '1_1b8x0XlRMJADG6p_Aniz_Vk3IXCwY5q', type: 'image' },
+  { src: '1t6u9RouTm9DKxyTVV28Y7TJ7zxG3RQ3p', type: 'image' },
+  { src: '1cBw6gULLgTQ-u8oqzrBTTnDIPvAdkmwd', type: 'video' },
+  { src: '1gID-YATnKOosDiCW_p5Trby1F7DkiasD', type: 'image' },
+  { src: '1r9qV0byytxItZc7x764gFFdfO7O9oV_W', type: 'image' },
+  { src: '1Q2XBvETOzkCsqoSHP1qD-9BcnoUwudij', type: 'image' },
+  { src: '1iNnwTu8zxh14CsVv1aeBpUW_Yw54F40i', type: 'image' },
+  { src: '12v9n_kpLp1BhyOQGTujZfPBMlAAQHLxT', type: 'image' },
+  { src: '1OlNp58eDIf8BnckG1kOl8J1Drfx0OUuF', type: 'image' },
+  { src: '1wx95hPifGcbJ7-xo8iE-Qy6WWkkRL2CO', type: 'image' },
+  { src: '11pTn9Fndl5-B-btqRKh4lvNmml-WUDHK', type: 'image' },
+  { src: '1e15IETjC9nTfPY8FRkYO7StBg0cWIc0U', type: 'image' },
+  { src: '1vykKeWxganinf7-O48GwegHYOYTuAAsT', type: 'image' },
+  { src: '175rlZgvLH5mHWHzivUfgkw6gE4a73HTS', type: 'video' },
+  { src: '1WNHKYC4bhFlETQY152F0V5nqdKC_xz8V', type: 'image' },
+  { src: '1flFotu4Ik3NxwLcHQLDxWX7YsrQ7KrrN', type: 'image' },
+  { src: '1TUos8waDl2wkXZ5IyN-o2D4RwNyss1jn', type: 'video' },
+  { src: '1LHhYdaFD2dzE7ieF9LTbS03GSiIWBih-', type: 'image' },
+  { src: '1iJo2CMHcojnKafW1eXGZUQ5amYg-DNBV', type: 'image' },
+  { src: '1M-p2Ci6Wgma68Lmsm5kxZgf1MOg_hjeo', type: 'image' },
+  { src: '1my6XxdVetWRycdU1vFSbMaXpSsj-ncLM', type: 'image' },
+  { src: '136mIABIkf4QZiw19ILLw-Jb5vuW4_4-U', type: 'video' },
+  { src: '1a0_JMLpmndtJyrzqBiBA4F52jnZq_vFp', type: 'image' },
+  { src: '1rMbAamE9djBz7x-llXzkC1HXTcM7ajSL', type: 'image' },
+  { src: '1tys7sjgSILXkRJYsyfWpqqfu0nLtYj24', type: 'video' },
+  { src: '1TTjGHdjHhvRWUnDa_PNyj_n0jOlUtVIa', type: 'video' },
+  { src: '1Ptrn5DBvy1cp8lqNfeW4PQl4Ao9XCa9q', type: 'image' },
+  { src: '14DbsoRZ3ushLLK08PKEVfkxcUYlcO2vC', type: 'image' },
+  { src: '1B1uuHdIWkB8Bk_n6iGHFIq3RAqetNetD', type: 'image' },
+  { src: '16uwqT47sm9tMNp0PcwzwUsRcQ_3yYnw3', type: 'image' },
+  { src: '1HfvtCLWH1m7hsT5YuQIWBH9p6oOvt_Ag', type: 'image' },
+  { src: '1MiO4pp-RUPO8AjuF_wE5H88kGH2N3EGl', type: 'image' },
+  { src: '1CodZQ_CVjibWffhS6Hp5I_Q9iDl_l5zG', type: 'image' },
+  { src: '195CRv3B7BxuhdBA4pb_ANj11SfK3pb3S', type: 'video' },
+  { src: '1UkQjeZDB5JeBqUwwP1PhlowfOP04iAQe', type: 'image' },
+  { src: '19r5GrTQ3Yqe7ocMUYVdsHZl3x_87yNef', type: 'image' },
+  { src: '1YwkVfWSE3w7M54u9qY6vqro7lmisXkAs', type: 'image' },
+  { src: '1p_r_0duAJJHQKs-PY1bojVMm5ZMyzK7Q', type: 'image' },
+  { src: '1ZZnA1xp0_ujsnZwjkhpprxXpL7uTiAVx', type: 'image' },
+  { src: '1_-007pLvcwL7FIz4B69rZz86Ac7CgQ7e', type: 'image' },
+  { src: '167ANfbHDc4Qnh-GXR92VwzS7kd9afLzU', type: 'image' },
+  { src: '1i5F-NEHxtc3C49KuuoI7qIxQZQOA_md4', type: 'image' },
+  { src: '1ShA4bhmUTDp0QIVXmyYBIc-M3gea1ElM', type: 'image' },
+  { src: '1IoHJOcsQeMdVYZcXO8KQv88vv7XtTP5x', type: 'image' },
+  { src: '1MNF6SyghVzU8D1axi3LuIGZUzKqWBmH-', type: 'image' },
+  { src: '1gaYSaRTx07u53q_LuAIygtzqm5XaZBtC', type: 'image' },
+  { src: '1kO2EQ45x9Cxeyp69S7B-I_UEvOKLZhPp', type: 'image' },
+  { src: '1JEm-5O18-K901IrfZNgcA5QhcoXIzkrx', type: 'image' },
+  { src: '1gVe401DyCxNDqDAwX5aH3sDBbWi08-Zf', type: 'image' },
+  { src: '1-Ozpj9n0eZoFWf-RYFJE_plvc3VgzsRl', type: 'image' },
+  { src: '1FLbLyfGkrz9JI7sG5sxdf0MxzOhA-OuB', type: 'image' },
+  { src: '1Yh4s3R3Jd7TzbhpmAPx2aBEFSFSLdhWe', type: 'image' },
+  { src: '1_2IfcrQyVFZ9zgaa-6DNF34CMd6AwqVP', type: 'image' },
+  { src: '1Yfih0EaAsNJDWrZd4QH70O0h9dk5jmH_', type: 'video' },
+  { src: '1dd_yEguFY1s9P6of33vKnGVxYV6qTepo', type: 'image' },
+  { src: '1NJ45FzR9OaUJdVFN9uAMlk5FAwhjkoG_', type: 'image' },
+  { src: '17OPmsot9tYOIGhO9kwgBiHinXXoGxex8', type: 'image' },
+  { src: '1WC3dzQ96cRw4aThnEcPocDz3dsI3pdx6', type: 'image' },
+  { src: '1TgS0eA3CU8YbewJ8iMrNw_5MTneOS5p_', type: 'image' },
+  { src: '15KUAfLaPnpjW6YYF99FOmiq4j4LbLcoK', type: 'image' },
+  { src: '14Ba3s6iMqK7JFS0mx_ATzGykpCoP4U9X', type: 'video' },
+  { src: '10Se6z7UYAYoeeQxWvK3_4GMS77Ti0feO', type: 'image' },
+  { src: '12ZymgBbNHEJRJWamuiV8H0sQhgwbKpgw', type: 'image' },
+  { src: '149mO0FfyHQ340R0ULhVcsStknDsbErTp', type: 'image' },
+  { src: '1kbfAvNKme1UugqlUNRaKQYgQqGJBYZZi', type: 'image' },
+  { src: '1xpUuuxFfMrsWh1vMxZVxn4LMd-kzIQXs', type: 'image' },
+  { src: '1h7JwtQ_UYFZd6e9EdTaj5ZTAjnVpIFNV', type: 'image' },
+  { src: '1BhHOGozqY5Wn-zTc6j-nK_-g701rYmtv', type: 'image' },
+  { src: '1bK_NeVQPojGKPFUW8rrmcJoTY7xmYfkS', type: 'image' },
+  { src: '1gHZCBoXpXRuOSyQInIOUKBtJV1Xnu6qK', type: 'image' },
+  { src: '1lCilEIfNwGa2Ne27_EBUZMvlLCDJhSGZ', type: 'image' },
+  { src: '1RuG1f7vnYXwixegPd9fYYxx42U3RKkUU', type: 'image' },
+  { src: '1eu412LEToopwiqjRx2CgYh_iAwN4L20l', type: 'video' },
+  { src: '1OyoExQbF-ztQw0eARtKOyO673Fb421Ix', type: 'image' },
+  { src: '1hBOC-yNTDWJzHuNTz45yf2AXykQFvb0E', type: 'image' },
+  { src: '11uAuO5pHmKWBYuMdKaYMv_67JjV2ngzO', type: 'image' },
+  { src: '1MdK0pKNh4hU3q3XJiLmPIqXhxUyXROC7', type: 'image' },
+  { src: '1RnKjmQ9OVQjkBD0h4LD1Z0LxNPD7-Ehq', type: 'image' },
+  { src: '1hocquc88IRE7FNUMo92YRvJz6fw4CiJs', type: 'image' },
+  { src: '1Es5ApJB_AbmD8OXUbFOCc8cybu-pL-g6', type: 'image' },
+  { src: '10ij1iytuh9nGr8Z-XeQb24dNVoZVUBJl', type: 'image' },
+  { src: '1XiFU8GucWJNOMtv01krZzv3SzDsZXd1z', type: 'image' },
+  { src: '1k_CbxZXFo_t27ODXB_PiI_gEagMnSeUN', type: 'image' },
+  { src: '1-_CeIAmiayAh5c8XogpY51qRLi-vWPLA', type: 'image' },
+  { src: '12CMfD7g5YFmPn5_LxYc_Cqyi-D4vk8u-', type: 'image' },
+  { src: '1TuafiTXxmAGiIkSMXrKhRIKzgQJXXRkT', type: 'image' },
+  { src: '1lXh5J1iAA9BL-qZj1loQ_ZJIK93TCPBu', type: 'image' },
+  { src: '1bF68Sophh9Ky4r-DvEJJ6pg6R7Yv7j5M', type: 'image' },
+  { src: '1Gtp7OHd7hMFeXPp_O8Ih-BiwsM2_1HFa', type: 'image' },
+  { src: '1MuuZlVY1Qq2BBM9U3siZsq1j44uPzm1_', type: 'image' },
+  { src: '1c7h2E00Dxib5PnrViWZX8ixmgeNaMGUW', type: 'image' },
+  { src: '1I-WgOvC7Bzi-Ap7ZlB1cFDRmLFgqonKJ', type: 'image' },
+  { src: '1DhXm8Lvbcv42SSfaFP-sVJhG465utGP3', type: 'image' },
+  { src: '1tbavUdGABi61I8a1WaB9Q_dfQhxWvbWa', type: 'image' },
+  { src: '1OZpuKS1ocgaNC0o2-U_BtMXCKHcerCpv', type: 'image' },
+  { src: '1OxQRbqCUGtdqPU1x5qf2cOLR7H2z84El', type: 'image' },
+  { src: '1txNo7xZPK1OxMqVVd8w9kw4IybagaVml', type: 'video' },
+  { src: '1_W7ab-Iyl4yIBm62nlKKcgId2ZqjxG9b', type: 'video' },
+  { src: '1slbdVnsvkVn3Z0O27rGFM4vzsa6cEgJt', type: 'image' },
+  { src: '1qk6-mm6qcnvbq6b0XnYuxZ9nqhqMyYjl', type: 'image' },
+  { src: '1TYCsB0Ops9R37dW9N5WxVfz3OFGS3w28', type: 'image' },
+  { src: '1L4j_rIMNa-TdOi_Itxku2EWQIeVQv58L', type: 'image' },
+  { src: '1mUhfk5AVo2nlkdzAXsUqLhhqS7Ueqrt5', type: 'image' },
+  { src: '1BKDup-e3o6CYXN9eDVFbDsr1RzrQOAhS', type: 'image' },
+  { src: '1rtmHZyp7qGg-cWQJraALwxcS6c1VjJKG', type: 'image' },
+  { src: '1vWMhbFcbAHK6CS8Lq-0wHZdpkT6uznAX', type: 'image' },
+  { src: '15isL3-hhzSmtodGemyE1w5IUOm6Sg2pW', type: 'image' },
+  { src: '1k5Uns4flDyWQ9yFtcIWvZcs-axwyRxBQ', type: 'image' },
+  { src: '1D2WEu-1guMqnqbqw0ngV-VUNU64XrZ3-', type: 'image' },
+  { src: '1G77pNDaYGWUMIZAwJ-Fhb9HjRQ5MUB_N', type: 'image' },
+  { src: '1jHv9d8mK7o2JdsfhewSqs6weJpxiZvaI', type: 'image' },
+  { src: '1oJyp1rfiAubpslHVIQ6DFYF8gqy2GEL1', type: 'image' },
+  { src: '14NHRpA0gMjLG0lY8dS9vRhZK5HZiecrl', type: 'image' },
+  { src: '1ZSMSDK_iw7FqZ89Xb47hMlHbN9N0z-zf', type: 'image' },
+  { src: '1f-gKAVK7MX-9wxcqBfYpOKXHgxJRFDWq', type: 'image' },
+  { src: '1j7BEOqT8HAyr63QYWFuWflECPgIYI3l-', type: 'image' },
+  { src: '1vT5yNO28Y6bw8hSgYkwjNk2sj8yp7YW7', type: 'image' },
+  { src: '1RKCcjBThm1TQ5X34hybcsWhzX2arM4Gn', type: 'image' },
+  { src: '1jnJQxTWUPrhaPK6hxU0Udja34hgw6Smx', type: 'image' },
+  { src: '1loSXFDTBVXW15POv7RlhSMQXJrALKjHO', type: 'image' },
+  { src: '1bvCt9wWBEPpq5ci8Szgkgx0wFFG6TxBa', type: 'image' },
+  { src: '18fLCataZTwrYTwcHsUEd3cwl8--hRZyX', type: 'image' },
+  { src: '1ZYw0KwbFYXaVCWXyPi1Osl6cEe6QleIw', type: 'image' },
+  { src: '17xhTZOFXW_M_6NYWicWmZ1WWWao6wXKa', type: 'image' },
+  { src: '1q3yRu-7XVlIkiWz0KbOF0jS5oL-9wwI-', type: 'image' },
+  { src: '1TvHwgNKMfs-T_xLihO3Cetxb6Eu-Yo0p', type: 'video' },
+  { src: '1Dp82NHmjJW0v0gc038Z81YwpqPxSPuQK', type: 'video' },
+  { src: '13r4-6KZ251435MVUSotjd03a-DnV2NU4', type: 'video' },
+  { src: '1UXYS9Fl_CXlVreS96lA0O5jQWTMJsjUt', type: 'image' },
+  { src: '1ZjDOIxfc-20CeJins24r5jDtPgEl_6P9', type: 'video' },
+  { src: '1FKl-jMyJQFLxmu3xBI3mDLb6K2UBx96d', type: 'image' },
+  { src: '1pup0piogExC8lpf3fkYFyFm6mE7wluUr', type: 'image' },
+  { src: '1-PuNMUr6Pm1bdKAPhUE-Pd_ZVVOw-VTd', type: 'image' },
+  { src: '1wudOAnkQW_pvPp9OBRfsOi9Hy_S3PwoR', type: 'image' },
+  { src: '17PpcGpkXAQvQPY457jxXfVDFacpynfqx', type: 'image' },
+  { src: '19vAjGzY50KLJ_vtMfqaxUOOkehWV2Ulx', type: 'image' },
+  { src: '1ObbTrW_Jf_ndrAkuD7VgVRVv3AaoH7IT', type: 'image' },
+  { src: '1XzASYzd2c_DUWqzeqybqC9JOsvQGulzh', type: 'image' },
+  { src: '1RJl-AEyhVNjeKeb15GhjADotbZixOUHH', type: 'image' },
+  { src: '1XN40V3PRvYpibw9HJTBQ0kA-X3mDASCH', type: 'image' },
+  { src: '18PmAHtIWXODhrVrJHVn5kZu6zqev2MfR', type: 'image' },
+  { src: '1uQNw-HXztx8-fyRgKNbbxLxTs3saKNvT', type: 'image' },
+  { src: '1v0q03wtkju6yjK_Nv0U4miNI8lySOUdY', type: 'video' },
+  { src: '1tQdyJuvJ1ZiQP4Q901dOvhHAbU6qeLgM', type: 'video' },
+  { src: '1FoiwdaaOPDsB4v85lo3QpOSVM107QEoe', type: 'video' },
+  { src: '1DxS3kVpnJFkJdBv94cnAEczX6B_bY50q', type: 'video' },
+  { src: '1UtPEXA06SQtJTTaVg0iMhLFAIeXdlNo-', type: 'video' },
+  { src: '1RHTCApUwW0IrO0SoIhanHOG_Q2kjRSnd', type: 'video' },
+  { src: '1mYvDmlnc9x7o_i1nbF7_C-q27rlzgw8Q', type: 'image' },
+  { src: '1XAS8Fx2MFNTdoof-jdBECtTURpDWZTJj', type: 'image' },
+  { src: '12XVMMHOjx7pRulC9Ne3DqHqAS-uFnIzx', type: 'video' },
+  { src: '1fBbDGhHMzcbaeG90O6tMM4aOiVd1QuAA', type: 'video' },
+  { src: '1FWvqvE35EPwSaxJHQAOBmJCCZOZCKw2t', type: 'image' },
+  { src: '1whuJJSvQLkzmaH_WeGrYxyQ_t2oZHORi', type: 'image' },
+  { src: '1fwN--y2ua6ZAKaZ2vvgHnSNThDwS6u8i', type: 'image' },
+  { src: '1j1_NIgmXjfys-cJnUPu-7ocMYOb8YW2d', type: 'image' },
+  { src: '1Z9aNA1TZGkjvwxWHr0pgyTE2wiV10XXU', type: 'image' },
+  { src: '1QimfcHXxvKZkW3HHUo3V3BO1sEByzWio', type: 'image' },
+  { src: '1-7L7viOTfM_M0jQnSecMUqzYcmcoWuAw', type: 'image' },
+  { src: '1DjJ6Id3IvBkLk3kXpIAMXbeCeO75rvAD', type: 'image' },
+  { src: '1P4z-KPcPT1mqS-xcr-otibCA6JYPl3gx', type: 'image' },
+  { src: '1mZQmRPx9lvhyUZHtHun_S8q0MZNJ8eiq', type: 'image' },
+  { src: '1fwAihVrZgxipG1jtBbgKCizAxHQCMF11', type: 'image' },
+  { src: '1Wky-2puyCGo683Jok4jcD0vbB3rC0p6D', type: 'image' },
+  { src: '1gknIPSvxfYs4VNChtxX1G_MbMuL5QYpk', type: 'image' },
+  { src: '1gJCUUuu7ei8v2BoULuuGPyAKYP39WuM6', type: 'image' },
+  { src: '1F6yzSeBDr4uwIiZXdyN0oTwTKRlimekt', type: 'image' },
+  { src: '1uo4TUijhKV2SdJ6qitTNrnNn6efZOcpk', type: 'image' },
+  { src: '1tY8NOU8RANIa_0eQpxHvZBoXpoUg7MzI', type: 'image' },
+  { src: '1OCqenoPe0skNyB7f8PYKQY36BTxKh4xI', type: 'image' },
+  { src: '10QRky07jOwSG85sIHNQ9rA-2R_gQUWwk', type: 'image' },
+  { src: '1UDDFJDlEpW-mk8dHhs58qT7elqAbLaEf', type: 'image' },
+  { src: '1U_VjkaFAJNISyMxRu18g_6s1JMpcbBwC', type: 'image' },
+  { src: '1Bd_Avhf1gA3jrrRwj01DN2QkV5WWROyb', type: 'image' },
+  { src: '1D2vJ_lqaFYy-3b0h4ShRYXrAj_NvCjgj', type: 'image' },
+  { src: '1QY-L7tCB83opqgs0Cr_WFgaKVCSiBIyo', type: 'image' },
+  { src: '1VcFGyiVpzngFbC_uIfW98HB0LudmSChj', type: 'image' },
+  { src: '1LXvC8dC6qKedDZIMe2EABoaK4TiuUPXf', type: 'image' },
+  { src: '121uIL8Fo61_GSot2Ow-IjXUviHqk4BdG', type: 'video' },
+  { src: '1aAd064hjtayeY6NDlMuhR6Uj3OeYcFEs', type: 'image' },
+  { src: '144PU-iIonkVDxDqxwUZbfeXeh9Lf4sKr', type: 'video' },
+  { src: '116nHP0A8mBZhKyCRkzIw4BTa_uwSMkSb', type: 'video' },
+  { src: '1j8gEKYw_Xs0BcB6xY8M1_jDPpHxhF5bj', type: 'video' },
+  { src: '1f0GH62CXO2YoSFJdOIZsdbvXX8svrPeT', type: 'video' },
+  { src: '13-qVBJzaO3kGwFj3CQoJKMUUJDH8-Ttw', type: 'video' },
+  { src: '1mR2x4WfLSxwU5eWZ6Gzqv44PdW6minFm', type: 'video' },
+  { src: '1-vXAsZNrHnstP8UeP7Z-G1VMxUWoDDmo', type: 'video' },
+  { src: '1nHPFEMFFiOwuLJjy9TFRLgprX1T2SIAV', type: 'image' },
+  { src: '1Ku0bEYxQhzQN5sTRcZj6a_dQYtMN03Cp', type: 'image' },
+  { src: '1aR_EkEfvzCN6yw8Cqkvq8XVJM52hFaih', type: 'image' },
+  { src: '1doBvv6eDigzG7sFt-Wg7KOKmBa3F56AH', type: 'image' },
+  { src: '1dUaLGbs4mjc0HJorrQg7mXpwbNMV2Nno', type: 'image' },
+  { src: '1J7yzADeawXoobmMKilsy2kWaU1LTggRG', type: 'image' },
+  { src: '1n2i1enARkXNgP6mqaRrbnz47PbISUEuw', type: 'image' },
+  { src: '1dD4e2oKZpXBXlSlagPkvSDSRsrVTxwDP', type: 'image' },
+  { src: '1FCkHkp2B9XX8H3VjPki7pcHUNvT1K2S5', type: 'image' },
+  { src: '1zYPBQiWwUbA135xdIOkJuet8NKUr6zwE', type: 'image' },
+  { src: '1xE8l3E68Y71wVUJ3dPex959QXXWoXJ8_', type: 'image' },
+  { src: '1RgfnGkwojzS322bLx4epWdfOWVHy8jfi', type: 'image' },
+  { src: '1_O_D6MPSQpalP5tlggIwV-r-MkYc86DW', type: 'image' },
+  { src: '1lygjbQcJWSAzc38H0mZMUlCXKQx0xqBg', type: 'image' },
+  { src: '1T_zFzLaPFk39L3cjmxirhRlocEJLL8Cy', type: 'image' },
+  { src: '1ynQ_E6xymuq91ynMb0RTwPceWD-4-_Fr', type: 'image' },
+  { src: '1jRr5121YmBSI2mm8jlTM4KsqBt5JKzAK', type: 'image' },
+  { src: '1w1Uk_2UvrTM54y-1oy37dVOPrl4ySEQi', type: 'image' },
+  { src: '1WROtmFc3FKU4NKC9p1chnYARdgctLVp2', type: 'image' },
+  { src: '1GSqVxp0qVHGJJ918-T7HYoBkV8Jm0UzJ', type: 'image' },
+  { src: '18vjRFoU7_ZH1gcq12IUh1ZFkWApW0K0j', type: 'image' },
+  { src: '1avGL_iY5Noe4BOPcVM7pB6IjqGIvW1j0', type: 'image' },
+  { src: '1Npv8PDmmhUgEZapvvoDZ0QkFCiGdkUGn', type: 'image' },
+  { src: '1gwD52xAUNlNUG6Apw5gBhl6ddvNwSfK7', type: 'image' },
+  { src: '1NUHnR8xDlLlVeZxaO8bNaUkSdR80iRjs', type: 'image' },
+  { src: '1hp9PErj5vxiB_62-i2L3VNVVfoBQOaW_', type: 'image' },
+  { src: '1x1hfz2svbMJ1hkHDQrtIuo87DoJFPlOF', type: 'image' },
+  { src: '1-K5Z2VasuUMIQmb_BLEAMIZHT297a9Cg', type: 'image' },
+  { src: '11hUEmx9NCMbcpFTXCIXZvIYSbCGVuTZz', type: 'image' },
+  { src: '13Hgi5JCy6EBCp7Cn_DofyIAx19vncwdK', type: 'image' },
+  { src: '1EG1e2a2YEtMNWHV5GcdAUHNA8TlQ4ztE', type: 'image' },
+  { src: '1dN72Sp8cJcjxVISjG2ZnwGzRxRqV1-fJ', type: 'image' },
+  { src: '1XGVxSv_99BmncSUgvNp0thdwwCaTef_-', type: 'image' },
+  { src: '1BaILtPsdq9-eszDUQx6PwGgNu4D6B5gn', type: 'image' },
+  { src: '1nc-VXbedHSe0KZKtpWiiXq_PggcsKCh6', type: 'image' },
+  { src: '1W_e20x1S64_7cmkvTBCqSUScuD5sB09M', type: 'image' },
+  { src: '10GfjYZuutJhNR7scMRv27yX7GOOeevwk', type: 'image' },
+  { src: '1BwDW7aIyXO-jR5KGGcU6JCZK-RAtuR3b', type: 'image' },
+  { src: '1cloulLeDLcEoZCLXDSXGYQaT_or-zFqG', type: 'image' },
+  { src: '1urnDy1nLT_njMjKN4yaFpW1YnDOoDefa', type: 'image' },
+  { src: '1Xg9kEF1i_USKne3ln_Q5mXr6q7VZMO3w', type: 'image' },
+  { src: '1nCHb5z0Pgxe0MyD_BEWSsFOcKJGOqblI', type: 'image' },
+  { src: '1g15YG2msENBZXdNYtDVYWxqDL_w2dcLp', type: 'image' },
+  { src: '1-qWkeqvLK0Nw28RxLJOJXvA7ErVM0wqS', type: 'image' },
+  { src: '14t9fGNmmmCk6_eM-lfixN8Tzfp91JRMN', type: 'image' },
+  { src: '1RaDjBXnGlGSfNK06FkSf_Yx8NY69-V3J', type: 'image' },
+  { src: '13r_yaw4JBswmUGtmOPwYzkDcoyIk6RcV', type: 'image' },
+  { src: '1pz_05-WGvtQ81aFyFZwMFv2h-vr0bLTU', type: 'image' },
+  { src: '1g5sC6jZmwtJdpfn3JQN8n4D6KXqZO66a', type: 'image' },
+  { src: '1WWptGb4pzhh5pGFKOYJVN4JVmHD5_G0o', type: 'image' },
+  { src: '18aWmlAfD8wztirQyUVyKgygaZ-kmttUf', type: 'image' },
+  { src: '1XZ49lYeRp1isUmyLjl0pFZLPNnY2wICe', type: 'image' },
+  { src: '16cMgBOasDhtbKA5GUmmCLyDmeGNXLQuc', type: 'image' },
+  { src: '1E_fxDU_hE6HE--Tvaaf2aPX_wW4Ks6nz', type: 'image' },
+  { src: '1-eDKTe4hDsK6K8SwLfaGr9lkY_v1Prqa', type: 'image' },
+  { src: '1LO3Jq2HW6ueS6DJY9ouJS4SNQuzqGCnI', type: 'image' },
+  { src: '1WS0ysLbafbS3wJFR4GyuMY4K67vBucst', type: 'image' },
+  { src: '1L6RgU2JV4L69YCVtg7xCfu8z89oRBEP-', type: 'image' },
+  { src: '15P28TL16tORGPhoAxgoZgoNugGeupKyy', type: 'image' },
+  { src: '1X96c19v9Cb9jX5uMPoTwUF3MYbs3Si4B', type: 'image' },
+  { src: '1btNVQuRDvnILWGmpmH4KhYoQs3K9RhLo', type: 'image' },
+  { src: '1LD8WMAR8iElxrdqVlXzSoqdHFRFx79NE', type: 'image' },
+  { src: '1TFbArxq1nTnzx2kLQI5qloua21gV0V3D', type: 'image' },
+  { src: '1wcDycEUKK5EekNw5J91Gx-OtX7xIsj4w', type: 'image' },
+  { src: '1OYT7K33vDGYH5pNNyRRUxv5_lfeMRGW-', type: 'image' },
+  { src: '1iYNHGi7b9Zhke-tdABYAYOyr9D7BEAoo', type: 'image' },
+  { src: '1QuxtlWH90VHimmh3MB2GxBYGItnC80oP', type: 'image' },
+  { src: '1jfGWuBvuknloDUZDvz_naTETmddqZrg3', type: 'image' },
+  { src: '1UnZTI0dLbqPGG7nx5OGRLWBh1peXtHhO', type: 'image' },
+  { src: '1zji7tD_2B80Jh2UnbigS59CTo7onbJLQ', type: 'image' },
+  { src: '1oTNWlOce1qDQ4lz1w2KXDP9kgIlLTcHU', type: 'image' },
+  { src: '1sDVDdyREbAj1PuQi94R_mt6ys0Ra7cpo', type: 'image' },
+  { src: '1-d-4ov_QHVZGWj1R-brEp6-jdpH6XNnQ', type: 'image' },
+  { src: '1dn8d7ihFaxJ33QUfnxxtklWhRLOEUbX1', type: 'image' },
+  { src: '1uVXzaDehCaT3pXyZLEO2z1g72IeNCEvu', type: 'image' },
+  { src: '1Krj1bsFY0Y_-0ZPxMrA0lucIW7zRKpQv', type: 'image' },
+  { src: '1f3zcyewZ5iXk8QsgF2rka4jXYN3j8UTl', type: 'image' },
+  { src: '1BpOacbXXHt8XGCEBkeRToQnMSJwsh8VS', type: 'image' },
+  { src: '1ASkxUpubbJt6cZJVOL92WU4jYEaTd4ED', type: 'image' },
+  { src: '1bkfjR1T2nnelBd9DQI2v7XqsxvQ9s_9E', type: 'image' },
+  { src: '1Q_7VBtE2nEoeZfdf13bKk2VvdxO5DEfH', type: 'image' },
+  { src: '1nfiib5rQDVTLl271N_cqYZP47VpHncNY', type: 'image' },
+  { src: '1sHAD4jiHx8hQA1j-a3kqbAd_3ePJxUvO', type: 'image' },
+  { src: '1QImGitqtsu5D5k2NQsxsq27lfVEAUN57', type: 'image' },
+  { src: '1hEQAZZHKD9wE0wTL91m7dKkCs2zEJYhl', type: 'image' },
+  { src: '179VmqkCasNbGzmmHKhhEn4o7gCq94tsc', type: 'image' },
+  { src: '1fQqMY_iE23sAJPmrEtPqdIQC8mc3GfHL', type: 'image' },
+  { src: '1BYQgeKzcTP4ZVbBMeu077HV6q8sbJte9', type: 'image' },
+  { src: '1-U4GEuOU5rF6-XXxL3Hu0ajP4xpKv4Vj', type: 'image' },
+  { src: '14OEn-JPi5xqKCUK1gXF5MbU-BPbhVM81', type: 'image' },
+  { src: '1H225gIM9loCcmxyVz3rDiAfr3GQ-gIp3', type: 'image' },
+  { src: '1hWCbYNDxjCFuBvUUhJPDis2GX4d0PkyM', type: 'image' },
+  { src: '15y2KIqk2d8LOKk_WnmFRSWyVkWJFJvkb', type: 'image' },
+  { src: '1c8jyE2-xd75NBW78KoU90LrjyuKnXk_V', type: 'image' },
+  { src: '1gN0aNXaM3nb1xHxd4oZ4p4b32b3hTNcz', type: 'image' },
+  { src: '15gCPt6Ase67VBtj-94a_5pGLxjWParUy', type: 'image' },
+  { src: '1yjiipJmZuboSyEPsSZbtoKmKlSQQehaa', type: 'image' },
+  { src: '1Zukv6ugHRupwlVnBm60YAnVgp-a6IY0y', type: 'image' },
+  { src: '1n40duw8KwKAAgq05UKuaIztPeHvvPSOV', type: 'image' },
+  { src: '1EZ398LX8dUkf5ERog8GRKL60GFfjgIoy', type: 'image' },
+  { src: '1G4yu4xDYzLfgSzvKsu1QN6Jz26Lvk7-4', type: 'image' },
+  { src: '1ZO3UJPFa8rYn9Gld-72d-ydq9Q2dIYCu', type: 'image' },
+  { src: '1sC-GPlpRcVkLiKznNNLET_mm6D1SYujW', type: 'image' },
+  { src: '1X0auChEcdTPRz8ZGBxXLfAZFTZyDysIz', type: 'image' },
+  { src: '1_KpsRXoxXJ0OZ_ks7ccgM2xO3ALlqrsb', type: 'image' },
+  { src: '1kPwk8uOVkxcujyHgx3DIPjnDnV6VR0LA', type: 'image' },
+  { src: '1GsFBG1JVY2WLKeLWFDMAeoFvUYtxqtXT', type: 'image' },
+  { src: '1If_o2314tQFqQdoOO9BIF3fQ1egh-5xi', type: 'image' },
+  { src: '1qetwNcZJJxkNfUWY1kE6zeUBMCPJpbVy', type: 'image' },
+  { src: '1QybnIF8C4hIYDaauls4N6kJyucd9jimc', type: 'image' },
+  { src: '1SoReUvtkieTRlBP8nRzHzJF2JRg_ZnFN', type: 'image' },
+  { src: '1Hi4K19ZsZDa4c7X9ot19x5V4S9YA9LIr', type: 'image' },
+  { src: '1MXV8Jgv3U9lVjNbntHavQmsSefNLXop0', type: 'image' },
+  { src: '1Yu7IkSQX5yMR8RFC-4khMm2Cu2m2UtUK', type: 'image' },
+  { src: '1ERFgk3DnREUfc58RK_kujbRuHEgaGENW', type: 'image' },
+  { src: '1xwEtGjr5K38SExx8yG7yGzUzhwW0Lav6', type: 'image' },
+  { src: '13ad8w7ARUe6SJEdrB1mt5L_fGCUeF5ho', type: 'image' },
+  { src: '1pj-iEQXvAK5u5KH1jpSq5snN22UnhOui', type: 'image' },
+  { src: '1JDffpjvlH7J-PHBmXa39AwSOWKhuihD2', type: 'image' },
+  { src: '1-n8klaoRM1TQAI9G2uY3H6b2w5R2wEYq', type: 'image' },
+  { src: '11kKhgNY3lu55RFXIJ--uiACWIbhW0MdF', type: 'image' },
+  { src: '1JBHEc-mI6PqCTUjihCLHIYC5Zp6PdEFv', type: 'image' },
+  { src: '1fEyZkYy-04oTc-3Qvd_QzcRACSLPvXhf', type: 'image' },
+  { src: '1djsRRhCRekiBMwWuXCBnyUiLUbX0YnfU', type: 'image' },
+  { src: '1NDHJ6Lihen14efNkBosoPUx60_iTkmQ5', type: 'image' },
+  { src: '1HTOSWltDEDBW5jLPV4QJiT9GoCNY61D-', type: 'image' },
+  { src: '1fCSmjmYruAt_2eQk21TIN8eml4hqC5Nz', type: 'image' },
+  { src: '18JQt5FN5aMLf53fmwBpfiEsh8I8fcbNi', type: 'image' },
+  { src: '1UeYl8B2et2oPltdhCG3mcJ671E2AOYDW', type: 'image' },
+  { src: '1dL0JFmwHiLCDmBKodpQmGCAjBY1dhtQj', type: 'image' },
+  { src: '1xgyAMMFOl4HQoE4IyFqtetRINAj3CInG', type: 'image' },
+  { src: '1WDbl57na__M7VqYNIsgp9XwpSl5dDuw7', type: 'image' },
+  { src: '1KBjmwP-8hnWORTeo8z3O4X4MgMnT-lvX', type: 'image' },
+  { src: '15Ogd7bcWhVhcZJvJnM2wULdIo_7MYDjC', type: 'image' },
+  { src: '1cKB8IoXucjH7T3jr3lC0OHJEEjwplJEK', type: 'image' },
+  { src: '1gO0ai8CztixEhsEb306ZzZB3Pfick12B', type: 'image' },
+  { src: '1yn9AQ90nXcd1E3op22QibrwF4oT8NprV', type: 'image' },
+  { src: '12Z4pzr1h_AHgC1XEKDzIxboZQSArmCsJ', type: 'image' },
+  { src: '1u8gIzYotT9P7Un537cS2nD7M2Km0TO9e', type: 'image' },
+  { src: '1XbGJyo0YaPk4OWw-HJ9lwS9FNtsmMlOR', type: 'image' },
+  { src: '1wrB5p8KxaLree-L-0bZNqieij-fcodhE', type: 'image' },
+  { src: '11RqAX2sazrlnUa8agVfU9gnIGUeZv8FL', type: 'video' },
+  { src: '1aGNkqYHB4TNxMhe4xZQvMkouQ5Z7rdvY', type: 'image' },
+  { src: '1r3tbz_Ywav36pVTBaigDQwx-KkYBzj6X', type: 'image' },
+  { src: '1scpdTG-_qWqVAh0tecXewxRC5FaAsU0k', type: 'image' },
+  { src: '1DIJbIM2jp-3QIj2IYklDJvsnuxXsSN-0', type: 'image' },
+  { src: '1WWnUjrKxv51oA810exqLbDWNbsLkBaIu', type: 'image' },
+  { src: '1MGY-7peJg7TIKZ-sowN6j4x0meIwPJAs', type: 'image' },
+  { src: '1ck7-xSzrzrGwU6BK7vKLbE7CXMspy-Pv', type: 'image' },
+  { src: '1YJazB88XswydmfWB8oe9Ksdmc08ylc1v', type: 'image' },
+  { src: '1eeRmyKYigRXnuu3_eJS1eNGpCkZOJUvF', type: 'image' },
+  { src: '1vc9W-sj-Za2DEUfLH3M5-HZkerqYVla2', type: 'image' },
+  { src: '1wvPyNlOhvpXlxS8V6g_kQtn8EWhNkZTb', type: 'image' },
+  { src: '1DNKq4HeueLQlSKVUGUR1yXTV-yexqBzT', type: 'image' },
+  { src: '1PTSkkkvQDNHCRmfXiJ3OVPZU__KwvFne', type: 'image' },
+  { src: '1SkQspZwHDfk0MFeIra6yIFlKSBBaLvG8', type: 'image' },
+  { src: '1fDjIWF4RLNbW0geQ8JSi3fjXSp2ZGRT7', type: 'image' },
+  { src: '1kKeG0te7nfmvlKPV4qazNfeNzv7lr14G', type: 'image' },
+  { src: '1xxnU9VzobDYfx_AYDSFMX3nZLeUiqiya', type: 'image' },
+  { src: '1BiYPIMeSUazPEqq_ZwizVmmQHeUnFX1s', type: 'image' },
+  { src: '1_Y9a9aCE7MeZZeZiqlUJnY2u3_WVGwSB', type: 'image' },
+  { src: '1BRwx48zulNER18udihkISgSRzkBWK6ZS', type: 'image' },
+  { src: '1_6GsojJCMKypOWS6TxWpt5UduQbBedP9', type: 'image' },
+  { src: '12ItEpLhwFlje8Ak0o89vcjH5MSAmJa90', type: 'image' },
+  { src: '1j8NXXOKxAz3dY6ckE86KV2D_HOJW-7Th', type: 'video' },
+  { src: '1ooigKt2xwXn3hUN8QiEOQDRQTb1J1K9J', type: 'video' },
+  { src: '1mQoEaHMnclk6hbxqk4vIP6M7dWp8rygG', type: 'video' },
+  { src: '1oeN9uPT8luWqIsdhT1_nIDraxElM0RTY', type: 'video' },
+  { src: '1W3QTDGYGIX-g4JiWOeA9_K8TVq1vtTZu', type: 'video' },
+  { src: '1SXRjQp7bYdmn9PJqgW5oFRlL5a-Npeex', type: 'video' },
+  { src: '1FpgSOtyBE4pAzSgFRA_LDwU4UX7W8k_9', type: 'video' },
+  { src: '1JMvpH4Z9QLH36zZQLBxFKPCx3X7dDrM4', type: 'video' },
+  { src: '10_liSAcl-TfMZOaV3V56x3zmaJkCOjZV', type: 'video' },
+  { src: '12ycfu-IJ6NubjyjZFerj0AYTeudm9Sje', type: 'video' },
+  { src: '15WEvPl4DrfEefIqhd11h4VOhNj0tiD0Z', type: 'video' },
+  { src: '11DHzGHUwGFEvGqXQ41bwiIWrHWUTm8AW', type: 'video' },
+  { src: '1cLIcCy9avcu3hAyoPGmatxGi_E3d_C7S', type: 'video' },
+  { src: '1jqXdUc7e2K7hl8T9NxzhqnKfWny1PLJp', type: 'video' },
+  { src: '14XIzBx9cBzUZn8UdsiuXlk048loiT9o5', type: 'video' },
+  { src: '1BV5L0yeR_HSQjbiAjFi5hLruumnAfEWS', type: 'video' },
+  { src: '12cmwROcmRgmTPddhZP6OwQhLFX-0Ocs1', type: 'video' },
+  { src: '1ZolKhW8_nv8I8AVDltPqB1NP6ONeObi7', type: 'video' },
+  { src: '1QdsFjF3LOZuh3y1M2-kNZLFtm2aLG4VH', type: 'video' },
+
+  // Local media from media/gallery/
+  { src: 'media/gallery/IMG_1603.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1642.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1646.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1663.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1664.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1665.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1667.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1669.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1670.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1671.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1676.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1681.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1683.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1686.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1687.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1689.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1693.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_1695.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1704.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1706.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1707.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_1876.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_2040.JPG', type: 'image' },
+  { src: 'media/gallery/IMG_2043.JPG', type: 'image' },
+  { src: 'media/gallery/IMG_2067.JPG', type: 'image' },
+  { src: 'media/gallery/IMG_2126.JPG', type: 'image' },
+  { src: 'media/gallery/IMG_2129.JPG', type: 'image' },
+  { src: 'media/gallery/IMG_2136.JPG', type: 'image' },
+  { src: 'media/gallery/IMG_2138.JPG', type: 'image' },
+  { src: 'media/gallery/IMG_2144.JPG', type: 'image' },
+  { src: 'media/gallery/IMG_7846.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_7850.jpg', type: 'image' },
+  { src: 'media/gallery/IMG_7867.MOV', type: 'video' },
+  { src: 'media/gallery/IMG_7869.MOV', type: 'video' },
+];
+
+// ── MUSIC TRACKS ─────────────────────────────────────────────────
+// Songs play automatically one after another (auto-next included).
+// name: displayed in the music player
+const LOCAL_TRACKS = [
+  { src: 'media/song1.mp3',  },
+  { src: 'media/song2.mp3',  },
+  // { src: 'media/song3.mp3', name: 'The One That Gets Us' },
+];
+
+// ── PERSONAL GIFTS ───────────────────────────────────────────────
+// Each gift is unlocked when a friend types their name.
+// name    : what the friend types (case-insensitive, spaces ignored)
+// display : the label shown on their gift box on the website
+// message : your personal message to them (be as emotional as you want ❤️)
+// photo   : path to their photo in your media folder (or leave as '' for no photo)
+const LOCAL_GIFTS = [
+   {
+     name:    'Malavika',
+     display: 'For Maluu... 🎓',
+     message: "To the one who was always a sister to me. Even though there was a long interval where we didn't speak because of that fight, the respect I have for you never faded. I’ve been trying to find the right words to say sorry for everything, but they just won't come out right—it’s all a bit improper and messy in my head. Just know that I still think of you, and I definitely still think about how good that Hyderabadi Biryani was.",
+     photo:   'media/malavika.png',
+  },
+  {
+     name:    'Priya',
+     display: 'For Daddy’s Little Princess ✨',
+     message: "We are two different versions of the same madness. I’ll honestly miss fighting with you over every single topic imaginable and speaking absolute nonsense from morning until night. Whether it was tea time or food time, your cooking always hit the spot. I know you tend to over-tension about every little thing and struggle to do one task at a time, but that’s just you. Never change, Daddie's Little Princess.",
+     photo:   'media/priya.png',
+  },
+  {
+     name:    'Divina',
+     display: 'For Ambili... ✨',
+     message: "To my sister by blood and my best friend by choice..... These five years would have been so empty without you. From our daily tea sessions to the endless chit-chats that never seemed to finish, I’ve come to understand you ..... You are the most overwhelmingly cute person I know.  I’ll miss the chicken curry you made it was tooo good...... It truly was in a league of its own. Thanks for being my constant.",
+     photo:   'media/divina.png',
+  },
+  {
+     name:    'Alna',
+     display: 'For Babu Paul..... 🌟',
+     message: "To my favorite crime partner: we fight over everything and we look after each other through it all. You always tell me you like me and I always pretend to ignore it, but from today onwards that may be missing . I cherish our time together and even those stupid daily quotes you speak or send . Regarding that trip, I promise I’ll join you once I get my job settled—I just need to get my family background and finances solid first. Your food was always the best and i like to Disturb you, Babu Paul.",
+     photo:   'media/alna.png',
+  },
+  {
+     name:    'Aslah',
+     display: 'For Issmail Ikka 🎓',
+     message: "You are, quite simply, good in every sense of the word. You helped me all the time and you always knew exactly how to handle every situation with kindness. Whether you were playing badminton or looking out for the rest of us, you were perfect. You and your family have such huge hearts; you taught me how to truly care for and love everyone around me. Stay gold, Issmail Ikka.",
+     photo:   'media/aslah.png',
+  },
+  {
+     name:    'Manu',
+     display: 'For Manu Kuttanzzzz 🎓',
+     message: "You started out as the laziest guy I knew, but seeing your accurate dedication to the gym and that total body transformation has been incredible. You might not always know exactly what you’re doing, but your heart is pure gold. Even if you’re easily triggered by bad words, you’ve always been a nice good guy to have around. Most importantly, thank you for teaching me about anime—it’s a huge part of my life now because of you. And try to be On time for once, Manu. And i won't Forget about Underwear....",
+     photo:   'media/manu.png',
+  },
+  
+];
+
+// ════════════════════════════════════════════════════════════════════
+//  (No need to edit anything below this line)
+// ════════════════════════════════════════════════════════════════════
+
+// ── DB ──────────────────────────────────────────────────────────
+let db;
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open('OurStoryDB',5);
+    r.onupgradeneeded=e=>{
+      const d=e.target.result;
+      ['media','memories','gifts','tracks'].forEach(s=>{
+        if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id',autoIncrement:true})
+      });
+    };
+    r.onsuccess=e=>{db=e.target.result;res(db)};
+    r.onerror=()=>rej(r.error);
+  });
+}
+const dbAll=s=>new Promise((r,j)=>{const t=db.transaction(s,'readonly'),q=t.objectStore(s).getAll();q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)});
+const dbAdd=(s,d)=>new Promise((r,j)=>{const t=db.transaction(s,'readwrite'),q=t.objectStore(s).add(d);q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)});
+const dbDel=(s,id)=>new Promise((r,j)=>{const t=db.transaction(s,'readwrite'),q=t.objectStore(s).delete(id);q.onsuccess=()=>r();q.onerror=()=>j(q.error)});
+
+// ── IMAGE COMPRESSION ────────────────────────────────────────────
+function compressImage(file,maxSize=1600,quality=.82){
+  return new Promise(res=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      let {width:w,height:h}=img;
+      if(w>maxSize||h>maxSize){
+        if(w>h){h=Math.round(h*maxSize/w);w=maxSize}
+        else{w=Math.round(w*maxSize/h);h=maxSize}
+      }
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      res(c.toDataURL('image/jpeg',quality));
+    };
+    img.onerror=()=>res(null);
+    img.src=url;
+  });
+}
+
+// ── GOOGLE DRIVE URL HELPERS ─────────────────────────────────────
+// Detects if a src value is a raw Drive file ID (not a full URL or path)
+function isDriveId(src){
+  return src && !src.includes('/') && !src.includes('.') && src.length > 20;
+}
+function driveImgUrl(id){
+  return `https://lh3.googleusercontent.com/d/${id}`;
+}
+function driveThumbUrl(id){
+  return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
+}
+function driveVideoEmbedUrl(id){
+  return `https://drive.google.com/file/d/${id}/preview`;
+}
+// Resolve src to a displayable URL
+function resolveImgSrc(src){
+  return isDriveId(src) ? driveImgUrl(src) : src;
+}
+
+// ── VIDEO THUMBNAIL ──────────────────────────────────────────────
+function getVideoThumb(src){
+  // Drive file ID → use Drive's thumbnail API, no CORS issues
+  if(isDriveId(src)) return Promise.resolve(driveThumbUrl(src));
+
+  return new Promise(res=>{
+    const v=document.createElement('video');
+    v.preload='metadata';v.muted=true;v.playsInline=true;v.crossOrigin='anonymous';
+    v.src=src;
+    let done=false;
+    const finish=(result)=>{if(!done){done=true;res(result)}};
+    v.addEventListener('loadeddata',()=>{v.currentTime=Math.min(1.5,v.duration*.1||1)});
+    v.addEventListener('seeked',()=>{
+      try{
+        const c=document.createElement('canvas');
+        c.width=Math.min(v.videoWidth,800);
+        c.height=Math.round(v.videoHeight*(c.width/v.videoWidth));
+        c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+        finish(c.toDataURL('image/jpeg',.8));
+      }catch{finish(null)}
+    });
+    v.addEventListener('error',()=>finish(null));
+    setTimeout(()=>finish(null),10000);
+  });
+}
+
+// ── GALLERY — POLAROID MASONRY ───────────────────────────────────
+let mediaItems=[],lbIndex=0;
+
+// Stable tilt angles for polaroids
+const TILTS=[-3,1.5,-1,2.5,-2,1,-1.5,3,-2.5,0.5,-3.5,2];
+const TAPE_ROTS=[-2,1,-1.5,2,-1,1.5,-2.5,0.5,-1,2.5,-2,1];
+
+async function loadGallery(){
+  const dbItems=await dbAll('media');
+  // Merge local paths + any browser-uploaded items
+  const localItems=LOCAL_MEDIA.map((m,i)=>({
+    id:`local_${i}`,
+    src:m.src,
+    // For Drive IDs: resolve to the right CDN URL; otherwise use as-is
+    dataUrl: m.type==='image' ? resolveImgSrc(m.src) : m.src,
+    type:m.type||'image',
+    name:m.caption||'',
+    caption:m.caption||'',
+    isDrive: isDriveId(m.src),
+    isLocal:true,
+    ts:0
+  }));
+  mediaItems=[...localItems,...dbItems];
+  renderGallery();
+  // Generate thumbnails for local video items (async, patches cards in-place)
+  for(let i=0;i<mediaItems.length;i++){
+    const item=mediaItems[i];
+    if(item.type==='video'&&!item.thumb){
+      getVideoThumb(item.dataUrl||item.src).then(thumb=>{
+        if(!thumb)return;
+        item.thumb=thumb;
+        const cards=document.querySelectorAll('.gallery-pol');
+        const card=cards[i];
+        if(!card)return;
+        const wrap=card.querySelector('.pol-thumb-wrap');
+        if(!wrap)return;
+        // Replace placeholder with real thumbnail
+        wrap.innerHTML=`<img src="${thumb}" alt="" style="width:100%;height:auto;display:block">
+          <div class="pol-video-label">Video</div>
+          <div class="pol-play-over"><svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.92)"><path d="M8 5v14l11-7z"/></svg></div>`;
+      });
+    }
+  }
+}
+
+// Lazy-load
+let lazyObs;
+function initLazyObs(){
+  lazyObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const el=e.target;
+        const src=el.dataset.src;
+        if(!src)return;
+        el.src=src;
+        el.removeAttribute('data-src');
+        lazyObs.unobserve(el);
+      }
+    });
+  },{rootMargin:'300px'});
+}
+
+function renderGallery(){
+  const grid=document.getElementById('gallery-grid');
+  grid.innerHTML='';
+  if(!mediaItems.length){
+    const e=document.createElement('div');
+    e.className='empty-gallery';
+    e.innerHTML='<p>Your story is waiting to be told</p><p>Add your photos &amp; videos in the LOCAL_MEDIA array at the top of the code</p>';
+    grid.appendChild(e);
+    return;
+  }
+
+  mediaItems.forEach((item,idx)=>{
+    const pol=document.createElement('div');
+    pol.className='gallery-pol'+(item.type==='video'?' is-video':'');
+
+    const cap=item.caption||item.name||'';
+    const capHtml=cap?`<div class="gallery-pol-cap">${esc(cap)}</div>`:'';
+    const DL=`<button class="pol-dl" title="Download" onclick="downloadItem(event,${idx})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>`;
+    const OVERLAY=`<div class="gallery-pol-overlay"></div>`;
+
+    if(item.type==='video'){
+      const thumb=item.thumb||'';
+      if(thumb){
+        pol.innerHTML=`
+          <div class="pol-thumb-wrap">
+            <img loading="lazy" src="${thumb}" alt="" style="width:100%;height:auto;display:block">
+            <div class="pol-video-label">Video</div>
+            <div class="pol-play-over"><svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.92)"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+          ${OVERLAY}${capHtml}${DL}`;
+        const imgEl = pol.querySelector('img');
+        if(imgEl && lazyObs) lazyObs.observe(imgEl);
+      } else {
+        pol.innerHTML=`
+          <div class="pol-thumb-wrap" style="background:var(--bg3);min-height:100px;display:flex;align-items:center;justify-content:center">
+            <div class="pol-video-label">Video</div>
+            <div class="pol-play-over"><svg viewBox="0 0 24 24" width="36" height="36" fill="var(--al)"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+          ${OVERLAY}${capHtml}${DL}`;
+      }
+    } else {
+      pol.innerHTML=`
+        <img loading="lazy" src="${item.dataUrl}" alt="${esc(item.name||'')}">
+        ${OVERLAY}${capHtml}${DL}`;
+      const imgEl = pol.querySelector('img');
+      if(imgEl && lazyObs) lazyObs.observe(imgEl);
+    }
+
+    // open lightbox on click / double-tap
+    let lastTap=0;
+    pol.addEventListener('click',e=>{
+      if(e.target.closest('.pol-dl'))return;
+      const now=Date.now();
+      if(now-lastTap<320){openLightbox(idx)}
+      lastTap=now;
+    });
+    pol.addEventListener('dblclick',e=>{if(!e.target.closest('.pol-dl'))openLightbox(idx)});
+    grid.appendChild(pol);
+  });
+}
+
+// ── Lightbox ────────────────────────────────────────────────────
+function openLightbox(idx){
+  lbIndex=idx;showLightboxItem();
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function showLightboxItem(){
+  const item=mediaItems[lbIndex];if(!item)return;
+  const c=document.getElementById('lb-content');
+  if(item.type==='video'){
+    if(item.isDrive||isDriveId(item.src)){
+      // Drive videos: use embed iframe for reliable streaming
+      const embedUrl=driveVideoEmbedUrl(isDriveId(item.src)?item.src:item.id||item.src);
+      c.innerHTML=`<iframe src="${embedUrl}" width="800" height="500" style="max-width:100%;max-height:80vh;border:none;background:#000" allow="autoplay" allowfullscreen></iframe>`;
+    } else {
+      c.innerHTML=`<video src="${item.dataUrl}" controls autoplay playsinline style="max-width:100%;max-height:80vh"></video>`;
+    }
+  } else {
+    c.innerHTML=`<img src="${item.dataUrl}" alt="">`;
+  }
+  document.getElementById('lb-counter').textContent=`${lbIndex+1} / ${mediaItems.length}`;
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('active');
+  document.getElementById('lb-content').innerHTML='';
+  document.body.style.overflow='';
+}
+document.getElementById('lightbox').addEventListener('click',e=>{if(e.target===document.getElementById('lightbox'))closeLightbox()});
+document.getElementById('lb-close').addEventListener('click',closeLightbox);
+document.getElementById('lb-prev').addEventListener('click',e=>{e.stopPropagation();lbIndex=(lbIndex-1+mediaItems.length)%mediaItems.length;showLightboxItem()});
+document.getElementById('lb-next').addEventListener('click',e=>{e.stopPropagation();lbIndex=(lbIndex+1)%mediaItems.length;showLightboxItem()});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('active'))return;
+  if(e.key==='Escape')closeLightbox();
+  if(e.key==='ArrowLeft'){lbIndex=(lbIndex-1+mediaItems.length)%mediaItems.length;showLightboxItem()}
+  if(e.key==='ArrowRight'){lbIndex=(lbIndex+1)%mediaItems.length;showLightboxItem()}
+});
+
+function downloadCurrent(){const item=mediaItems[lbIndex];if(!item)return;downloadDataUrl(item.dataUrl,item.name||('memory_'+lbIndex))}
+function downloadItem(e,idx){
+  e.stopPropagation();
+  const item=mediaItems[idx];if(!item)return;
+  if(item.isLocal){window.open(item.src,'_blank');return}
+  downloadDataUrl(item.dataUrl,item.name||('memory_'+idx));
+}
+function downloadDataUrl(dataUrl,name){
+  if(!dataUrl.startsWith('data:')){window.open(dataUrl,'_blank');return}
+  const a=document.createElement('a');
+  a.href=dataUrl;
+  const ext=dataUrl.startsWith('data:video')?'.mp4':'.jpg';
+  a.download=(name||'memory')+ext;a.click();
+}
+
+// ── Drag & Drop ─────────────────────────────────────────────────
+let dd=0;const dov=document.getElementById('drag-overlay');
+document.addEventListener('dragenter',e=>{e.preventDefault();dd++;dov.classList.add('active')});
+document.addEventListener('dragleave',()=>{dd--;if(!dd)dov.classList.remove('active')});
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',async e=>{e.preventDefault();dd=0;dov.classList.remove('active');const files=Array.from(e.dataTransfer.files);if(files.length)await processFiles(files)});
+
+
+const readFile=f=>new Promise((r,j)=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.onerror=()=>j(fr.error);fr.readAsDataURL(f)});
+
+// ── MEMORY WALL — shared via Firebase ────────────────────────────
+let memories=[],firebaseDB=null,memUnsubscribe=null;
+
+function initFirebase(){
+  if(!firebaseConfig.apiKey||firebaseConfig.apiKey==='YOUR_ACTUAL_API_KEY'||firebaseConfig.apiKey==='YOUR_API_KEY'){
+    // Firebase not configured — fall back to local IndexedDB
+    console.info('Firebase not configured — using local storage');
+    return false;
+  }
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+    firebaseDB=firebase.database();
+    return true;
+  }catch(e){
+    console.warn('Firebase init failed, falling back to local storage',e);
+    return false;
+  }
+}
+
+async function loadMemories(){
+  if(firebaseDB){
+    // Real-time listener — updates instantly for everyone
+    firebaseDB.ref('memories').orderByChild('ts').on('value',snap=>{
+      memories=[];
+      snap.forEach(child=>{
+        memories.push({...child.val(),fbKey:child.key});
+      });
+      renderMemories();
+    });
+  } else {
+    // Fallback: local IndexedDB (only visible in this browser)
+    memories=await dbAll('memories');
+    renderMemories();
+    showWallOfflineNotice();
+  }
+}
+
+function showWallOfflineNotice(){
+  const notice=document.getElementById('wall-offline-notice');
+  if(notice)notice.style.display='flex';
+}
+
+function renderMemories(){
+  const g=document.getElementById('mems-grid');g.innerHTML='';
+  if(!memories.length){
+    g.innerHTML='<p style="font-family:\'Cormorant Garamond\',serif;font-size:20px;font-style:italic;color:var(--cd);text-align:center;padding:50px 20px;grid-column:1/-1">Be the first to leave something here ✦</p>';
+    return;
+  }
+  [...memories].reverse().forEach(m=>{
+    const card=document.createElement('div');card.className='mem-card';
+    // pass fbKey for firebase delete, or numeric id for local delete
+    const delArg=m.fbKey?`null,'${m.fbKey}'`:`${m.id},null`;
+    card.innerHTML=`
+      <button class="mem-del" onclick="deleteMemory(${delArg})" title="Delete">&#x2715;</button>
+      <div class="mem-author">
+        <div class="mem-avatar">${esc((m.name||'?')[0]).toUpperCase()}</div>
+        <div>
+          <div class="mem-name">${esc(m.name||'Anonymous')}</div>
+          <div class="mem-date">${new Date(m.ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+        </div>
+      </div>
+      <div class="mem-text">${esc(m.text||'')}</div>
+      ${m.year?`<span class="mem-year">${esc(m.year)}</span>`:''}`;
+    g.appendChild(card);
+  });
+}
+
+async function addMemory(){
+  const name=document.getElementById('mem-name').value.trim();
+  const text=document.getElementById('mem-text').value.trim();
+  if(!text){showToast('Write something beautiful first ✦');return}
+  const entry={name:name||'A Friend',text,ts:Date.now()};
+
+  // Always save to local IndexedDB first — this always works
+  await dbAdd('memories',entry);
+  memories=await dbAll('memories');
+  renderMemories();
+
+  // Also try to push to Firebase if configured (for sharing with others)
+  if(firebaseDB){
+    try{
+      await firebaseDB.ref('memories').push(entry);
+      showToast('Your memory is now part of our story, forever ✦');
+    }catch(e){
+      // Firebase failed but local save already worked — still show success
+      showToast('Your memory is on the wall ✦');
+    }
+  } else {
+    showToast('Your memory is on the wall ✦');
+  }
+
+  document.getElementById('mem-name').value='';
+  document.getElementById('mem-text').value='';
+ 
+}
+
+async function deleteMemory(localId,fbKey){
+  if(firebaseDB&&fbKey){
+    await firebaseDB.ref(`memories/${fbKey}`).remove();
+    // renderMemories() called automatically by the listener
+  } else if(localId){
+    await dbDel('memories',localId);
+    memories=await dbAll('memories');
+    renderMemories();
+  }
+}
+
+// ── GIFTS ────────────────────────────────────────────────────────
+let gifts=[],openGiftIdx=null;
+
+async function loadGifts(){
+  const dbGifts=await dbAll('gifts');
+  // Merge local + db gifts
+  const localGifts=LOCAL_GIFTS.map((g,i)=>({
+    id:`local_gift_${i}`,
+    name:(g.name||'').toLowerCase().replace(/\s/g,''),
+    display:g.display||g.name||'A Gift',
+    message:g.message||'',
+    photo:g.photo||null,
+    isLocal:true,
+    ts:0
+  }));
+  gifts=[...localGifts,...dbGifts];
+  renderGifts();
+}
+
+function renderGifts(){
+  const g=document.getElementById('gifts-grid');g.innerHTML='';
+  gifts.forEach((gift,i)=>{
+    const box=document.createElement('div');box.className='gift-box';
+    box.innerHTML=`
+      <div class="gift-ribbon"></div>
+      <div class="gift-icon">🎁</div>
+      <div class="gift-name">${esc(gift.display)}</div>
+      <div class="gift-hint">tap to open</div>`;
+    box.onclick=()=>openGiftModal(i);
+    g.appendChild(box);
+  });
+}
+
+
+
+function openGiftModal(i){
+  openGiftIdx=i;
+  document.getElementById('gift-modal').classList.add('active');
+  document.getElementById('gm-input').value='';
+  document.getElementById('gm-err').classList.remove('show');
+  setTimeout(()=>document.getElementById('gm-input').focus(),200);
+}
+function closeGiftModal(){document.getElementById('gift-modal').classList.remove('active');openGiftIdx=null}
+function checkGiftName(){
+  const input=document.getElementById('gm-input').value.toLowerCase().replace(/\s/g,'');
+  const gift=gifts[openGiftIdx];
+  if(!gift)return;
+  const key=(gift.name||'').toLowerCase().replace(/\s/g,'');
+  if(input===key){closeGiftModal();showGiftReveal(gift)}
+  else{document.getElementById('gm-err').classList.add('show')}
+}
+document.getElementById('gm-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkGiftName()});
+
+function showGiftReveal(gift){
+  document.getElementById('gift-reveal').classList.add('active');
+  document.body.style.overflow='hidden';
+  document.getElementById('reveal-to').textContent=`For ${gift.display}`;
+  document.getElementById('reveal-msg').textContent=gift.message||'You are so loved. ✦';
+  const frame=document.getElementById('reveal-frame');
+  if(gift.photo){
+    document.getElementById('reveal-photo').src=gift.photo;
+    document.getElementById('reveal-cap').textContent=gift.display;
+    frame.style.display='block';
+  } else {
+    frame.style.display='none';
+  }
+  buildSparkles();
+}
+function closeReveal(){
+  document.getElementById('gift-reveal').classList.remove('active');
+  document.body.style.overflow='';
+}
+function buildSparkles(){
+  const s=document.getElementById('sparkles');s.innerHTML='';
+  const shapes=['✦','✧','·','⋆','˚','✿','❋'];
+  for(let i=0;i<22;i++){
+    const sp=document.createElement('div');sp.className='sparkle';
+    sp.style.cssText=`left:${Math.random()*100}%;font-size:${8+Math.random()*14}px;color:${['var(--amber)','var(--al)','var(--ag)','var(--cream)'][Math.floor(Math.random()*4)]};animation-delay:${Math.random()*6}s;animation-duration:${5+Math.random()*6}s`;
+    sp.textContent=shapes[Math.floor(Math.random()*shapes.length)];
+    s.appendChild(sp);
+  }
+}
+
+
+document.getElementById('gift-modal').addEventListener('click',e=>{if(e.target===document.getElementById('gift-modal'))closeGiftModal()});
+
+// ── MUSIC ────────────────────────────────────────────────────────
+// Supports LOCAL_TRACKS (file paths from media/) + browser-uploaded tracks
+let tracks=[],tIdx=0,muted=false,playing=false;
+const audioEl=document.getElementById('audio-el');
+
+async function loadTracks(){
+  const dbTracks=await dbAll('tracks');
+  const localTracks=LOCAL_TRACKS.map((t,i)=>({
+    id:`local_track_${i}`,
+    src:t.src,
+    dataUrl:t.src,
+    name:t.name||`Track ${i+1}`,
+    isLocal:true,
+    ts:0
+  }));
+  tracks=[...localTracks,...dbTracks];
+  if(tracks.length){setTrack(0);showPlayerIfTracks()}
+}
+
+function setTrack(i){
+  if(!tracks.length)return;
+  tIdx=i;const t=tracks[tIdx];
+  audioEl.src=t.dataUrl||t.src||'';
+  document.getElementById('mp-title').textContent=t.name||`Track ${i+1}`;
+  document.getElementById('mp-sub').textContent=`${i+1} / ${tracks.length}`;
+  if(playing)audioEl.play().catch(()=>{});
+}
+function togglePlay(){
+  if(!tracks.length){showToast('Add tracks in the LOCAL_TRACKS array ♪');return}
+  if(playing){audioEl.pause()}else{audioEl.play().catch(()=>{})}
+}
+function prevTrack(){if(tracks.length)setTrack((tIdx-1+tracks.length)%tracks.length)}
+function nextTrack(){if(tracks.length)setTrack((tIdx+1)%tracks.length)}   // ← auto-next on song end
+function toggleMute(){muted=!muted;audioEl.muted=muted;document.getElementById('mp-mute').textContent=muted?'🔇':'🔊'}
+audioEl.addEventListener('play',()=>{playing=true;document.getElementById('mp-play-btn').textContent='❚❚';document.getElementById('mp-bars').classList.remove('paused')});
+audioEl.addEventListener('pause',()=>{playing=false;document.getElementById('mp-play-btn').textContent='▶';document.getElementById('mp-bars').classList.add('paused')});
+audioEl.addEventListener('ended',()=>nextTrack());  // ← auto advances to next track
+
+function showPlayerIfTracks(){if(tracks.length){document.getElementById('music-player').classList.remove('hidden');document.getElementById('show-player-btn').classList.add('gone')}}
+function showPlayer(){document.getElementById('music-player').classList.remove('hidden');document.getElementById('show-player-btn').classList.add('gone')}
+function hidePlayer(){document.getElementById('music-player').classList.add('hidden');if(tracks.length)document.getElementById('show-player-btn').classList.remove('gone')}
+// autoplay on first user interaction
+document.addEventListener('click',function ap(){if(tracks.length&&!playing){audioEl.play().catch(()=>{})};document.removeEventListener('click',ap)},{once:true});
+document.addEventListener('touchstart',function ap(){if(tracks.length&&!playing){audioEl.play().catch(()=>{})};document.removeEventListener('touchstart',ap)},{once:true,passive:true});
+
+
+
+// ── HERO ─────────────────────────────────────────────────────────
+//function buildFilmStrip(){['film-top','film-bottom'].forEach(id=>{const el=document.getElementById(id),h=document.createElement('div');h.className='film-holes';for(let i=0;i<50;i++){const f=document.createElement('div');f.className='film-hole';h.appendChild(f)}el.appendChild(h)})}
+//const DEMOS=[{url:'https://picsum.photos/seed/m1/300/300',cap:'First day 🎓'},{url:'https://picsum.photos/seed/m2/300/280',cap:'Late nights...'},{url:'https://picsum.photos/seed/m3/300/320',cap:'The gang ❤️'},{url:'https://picsum.photos/seed/m4/280/300',cap:'Canteen days'},{url:'https://picsum.photos/seed/m5/300/300',cap:'After exams!'},{url:'https://picsum.photos/seed/m6/300/290',cap:'Trip 2022 🌄'}];
+//function buildPolaroids(){const f=document.getElementById('pol-field');DEMOS.forEach(p=>{const pol=document.createElement('div');pol.className='pol';const sz=80+Math.random()*65;pol.style.cssText=`width:${sz}px;left:${3+Math.random()*86}%;top:${8+Math.random()*76}%;--rot:${(Math.random()-.5)*22}deg;--op:${.25+Math.random()*.22};animation-delay:${Math.random()*12}s;animation-duration:${13+Math.random()*10}s`;pol.innerHTML=`<img src="${p.url}" alt=""><span class="pol-cap">${p.cap}</span>`;f.appendChild(pol)})}
+
+// ── NAV + UTILS ──────────────────────────────────────────────────
+window.addEventListener('scroll',()=>{document.getElementById('main-nav').classList.toggle('scrolled',scrollY>60)},{passive:true});
+function toggleMenu(){document.getElementById('nav-links').classList.toggle('open')}
+function closeMenu(){document.getElementById('nav-links').classList.remove('open')}
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+let toastT;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3000)}
+const obs=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.anim-reveal').forEach(el=>obs.observe(el));
+
+// ── INIT ─────────────────────────────────────────────────────────
+async function init(){
+  //buildFilmStrip();
+  //buildPolaroids();
+  initLazyObs();
+  await openDB();
+  initFirebase();   // sets up Firebase connection (or falls back to local)
+  await Promise.all([loadGallery(),loadMemories(),loadGifts(),loadTracks()]);
+}
+init().catch(console.error);
+</script>
+</body>
+</html>
